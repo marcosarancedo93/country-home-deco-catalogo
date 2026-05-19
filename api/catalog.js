@@ -244,7 +244,7 @@ const PRODUCTS = [
 
   // BOROSILICATO
   { id: 'mug-icon', title: 'Set x4 Mugs Irish Borosilicato 190 ml', description: 'Set de 4 mugs de vidrio borosilicato 190 ml. El mismo vidrio usado en medicina — resistente al calor.', price: 28900, image: 'FOTOS/mishka/mug-icon/1.jpg', category: 'Hogar > Cocina > Tazas y Mugs' },
-  { id: 'mug-icon-x6', title: 'Set x6 Mugs Irish Borosilicato 190 ml', description: 'Set de 4 mugs de vidrio borosilicato 190 ml. El mismo vidrio usado en medicina — resistente al calor.', price: 28900, image: 'FOTOS/mishka/mug-icon/1.jpg', category: 'Hogar > Cocina > Tazas y Mugs' },
+  { id: 'mug-icon-x4', title: 'Set x4 Mugs Irish Borosilicato 190 ml', description: 'Set de 4 mugs de vidrio borosilicato 190 ml. El mismo vidrio usado en medicina — resistente al calor.', price: 28900, image: 'FOTOS/mishka/mug-icon/1.jpg', category: 'Hogar > Cocina > Tazas y Mugs' },
   { id: 'mug-icon-x6', title: 'Set x6 Mugs Irish Borosilicato 190 ml', description: 'Set de 6 mugs de vidrio borosilicato 190 ml. Resistente al calor — para café, té y mate cocido.', price: 43900, image: 'FOTOS/mishka/mug-icon/1.jpg', category: 'Hogar > Cocina > Tazas y Mugs' },
   { id: 'mug-net', title: 'Set x4 Mugs Vienna Borosilicato 200 ml', description: 'Set de 4 mugs de vidrio borosilicato 200 ml. Vidrio resistente al calor para café y té.', price: 39900, image: 'FOTOS/mishka/mug-net/1.jpg', category: 'Hogar > Cocina > Tazas y Mugs' },
   { id: 'mug-net-x6', title: 'Set x6 Mugs Vienna Borosilicato 200 ml', description: 'Set de 6 mugs de vidrio borosilicato 200 ml. Vidrio resistente al calor para café y té.', price: 59900, image: 'FOTOS/mishka/mug-net/1.jpg', category: 'Hogar > Cocina > Tazas y Mugs' },
