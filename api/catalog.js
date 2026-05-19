@@ -186,6 +186,10 @@ const PRODUCTS = [
     category: 'Hogar > Aromaterapia > Esencias'
   },
 
+  // DECORACIÓN ADICIONAL
+  { id: 'elefante-noir', title: 'Elefante NOIR', description: 'Figura artesanal en resina negro mate. 20x14 cm. Pieza escultórica de impacto para cualquier ambiente.', price: 35000, image: 'FOTOS/mishka/elefante-noir/1.jpg', category: 'Hogar > Decoración > Figuras decorativas' },
+  { id: 'gato-noir', title: 'Gato NOIR', description: 'Figura escultórica en resina negro mate. 22x10 cm. Diseño elegante y minimalista.', price: 30000, image: 'FOTOS/mishka/gato-noir/1.jpg', category: 'Hogar > Decoración > Figuras decorativas' },
+
   // === COCINA — MISHKA ===
 
   // CARTAGO BLANCO GRANITE
@@ -194,11 +198,21 @@ const PRODUCTS = [
   { id: 'bowl-cartago', title: 'Set x4 Bowls Cartago Blanco Granite 15 cm', description: 'Set de 4 bowls de cerámica artesanal 15 cm. Línea Cartago Blanco Granite — ideal para cereales, sopas y postres.', price: 54900, image: 'FOTOS/mishka/bowl-cartago/1.jpg', category: 'Hogar > Cocina > Vajilla' },
   { id: 'mug-cartago', title: 'Set x4 Mugs Cartago Blanco Granite 450 ml', description: 'Set de 4 mugs de cerámica artesanal 450 ml. Línea Cartago Blanco Granite — para el café o té de cada mañana.', price: 43900, image: 'FOTOS/mishka/mug-cartago/1.jpg', category: 'Hogar > Cocina > Tazas y Mugs' },
 
+  { id: 'plato-playo-cartago-x6', title: 'Set x6 Platos Playos Cartago Blanco Granite 27 cm', description: 'Set de 6 platos playos de cerámica artesanal 27 cm. Línea Cartago Blanco Granite — ideal para mesa completa.', price: 119900, image: 'FOTOS/mishka/plato-playo-cartago/1.jpg', category: 'Hogar > Cocina > Vajilla' },
+  { id: 'plato-postre-cartago-x6', title: 'Set x6 Platos Postre Cartago Blanco Granite 21 cm', description: 'Set de 6 platos postre de cerámica artesanal 21 cm. Línea Cartago Blanco Granite.', price: 92900, image: 'FOTOS/mishka/plato-postre-cartago/1.jpg', category: 'Hogar > Cocina > Vajilla' },
+  { id: 'bowl-cartago-x6', title: 'Set x6 Bowls Cartago Blanco Granite 15 cm', description: 'Set de 6 bowls de cerámica artesanal 15 cm. Línea Cartago Blanco Granite — para cereales, sopas y postres.', price: 80900, image: 'FOTOS/mishka/bowl-cartago/1.jpg', category: 'Hogar > Cocina > Vajilla' },
+  { id: 'mug-cartago-x6', title: 'Set x6 Mugs Cartago Blanco Granite 450 ml', description: 'Set de 6 mugs de cerámica artesanal 450 ml. Línea Cartago Blanco Granite — para el café de cada mañana.', price: 65900, image: 'FOTOS/mishka/mug-cartago/1.jpg', category: 'Hogar > Cocina > Tazas y Mugs' },
+
   // PORTOFINO (VASSA)
   { id: 'plato-playo-portofino', title: 'Set x4 Platos Playos Portofino 26 cm', description: 'Set de 4 platos playos de cerámica artesanal 26 cm. Línea Portofino — diseño elegante con acabado suave y artesanal.', price: 87900, image: 'FOTOS/mishka/plato-playo-portofino/1.jpg', category: 'Hogar > Cocina > Vajilla' },
   { id: 'plato-postre-portofino', title: 'Set x4 Platos Postre Portofino 22 cm', description: 'Set de 4 platos postre de cerámica artesanal 22 cm. Línea Portofino — complemento perfecto para una mesa bien puesta.', price: 65900, image: 'FOTOS/mishka/plato-postre-portofino/1.jpg', category: 'Hogar > Cocina > Vajilla' },
   { id: 'mug-portofino-400', title: 'Set x4 Mugs Portofino 400 ml', description: 'Set de 4 mugs de cerámica artesanal 400 ml. Línea Portofino — diseño cálido y minimalista para el uso diario.', price: 65900, image: 'FOTOS/mishka/mug-portofino-400/1.jpg', category: 'Hogar > Cocina > Tazas y Mugs' },
   { id: 'mug-portofino-410', title: 'Set x4 Mugs Portofino 410 ml', description: 'Set de 4 mugs de cerámica artesanal 410 ml. Línea Portofino — capacidad generosa para el café o infusiones.', price: 43900, image: 'FOTOS/mishka/mug-portofino-410/1.jpg', category: 'Hogar > Cocina > Tazas y Mugs' },
+
+  { id: 'plato-playo-portofino-x6', title: 'Set x6 Platos Playos Portofino 26 cm', description: 'Set de 6 platos playos de cerámica artesanal 26 cm. Línea Portofino — elegancia artesanal para mesa completa.', price: 129900, image: 'FOTOS/mishka/plato-playo-portofino/1.jpg', category: 'Hogar > Cocina > Vajilla' },
+  { id: 'plato-postre-portofino-x6', title: 'Set x6 Platos Postre Portofino 22 cm', description: 'Set de 6 platos postre de cerámica artesanal 22 cm. Línea Portofino.', price: 97900, image: 'FOTOS/mishka/plato-postre-portofino/1.jpg', category: 'Hogar > Cocina > Vajilla' },
+  { id: 'mug-portofino-400-x6', title: 'Set x6 Mugs Portofino 400 ml', description: 'Set de 6 mugs de cerámica artesanal 400 ml. Línea Portofino — para el uso diario.', price: 97900, image: 'FOTOS/mishka/mug-portofino-400/1.jpg', category: 'Hogar > Cocina > Tazas y Mugs' },
+  { id: 'mug-portofino-410-x6', title: 'Set x6 Mugs Portofino 410 ml', description: 'Set de 6 mugs de cerámica artesanal 410 ml. Línea Portofino — capacidad extra.', price: 65900, image: 'FOTOS/mishka/mug-portofino-410/1.jpg', category: 'Hogar > Cocina > Tazas y Mugs' },
 
   // SORRENTO (VASSA)
   { id: 'plato-playo-sorrento', title: 'Set x4 Platos Playos Sorrento 27,5 cm', description: 'Set de 4 platos playos de cerámica artesanal 27,5 cm. Línea Sorrento — diseño artesanal con textura y carácter.', price: 101700, image: 'FOTOS/mishka/plato-playo-sorrento/1.jpg', category: 'Hogar > Cocina > Vajilla' },
@@ -208,22 +222,37 @@ const PRODUCTS = [
   { id: 'lechera-sorrento', title: 'Lechera Sorrento 280 ml', description: 'Lechera de cerámica artesanal 280 ml. Línea Sorrento — pequeño detalle de gran impacto en la mesa.', price: 16500, image: 'FOTOS/mishka/lechera-sorrento/1.jpg', category: 'Hogar > Cocina > Accesorios de mesa' },
   { id: 'bandeja-sorrento', title: 'Bandeja Ovalada Sorrento 30x14,5 cm', description: 'Bandeja ovalada de cerámica artesanal 30x14,5 cm. Línea Sorrento — para servir con estilo.', price: 35900, image: 'FOTOS/mishka/bandeja-sorrento/1.jpg', category: 'Hogar > Cocina > Vajilla' },
 
+  { id: 'plato-playo-sorrento-x6', title: 'Set x6 Platos Playos Sorrento 27,5 cm', description: 'Set de 6 platos playos de cerámica artesanal 27,5 cm. Línea Sorrento — acabado artesanal único.', price: 152500, image: 'FOTOS/mishka/plato-playo-sorrento/1.jpg', category: 'Hogar > Cocina > Vajilla' },
+  { id: 'plato-postre-sorrento-x6', title: 'Set x6 Platos Postre Sorrento 22 cm', description: 'Set de 6 platos postre de cerámica artesanal 22 cm. Línea Sorrento.', price: 108900, image: 'FOTOS/mishka/plato-postre-sorrento/1.jpg', category: 'Hogar > Cocina > Vajilla' },
+  { id: 'bowl-sorrento-x6', title: 'Set x6 Bowls Sorrento 680 ml', description: 'Set de 6 bowls de cerámica artesanal 680 ml. Línea Sorrento — para pastas, ensaladas y sopas.', price: 108900, image: 'FOTOS/mishka/bowl-sorrento/1.jpg', category: 'Hogar > Cocina > Vajilla' },
+  { id: 'set-completo-sorrento', title: 'Set Completo Sorrento', description: 'Set completo Sorrento: Azucarera + Lechera + Bandeja Ovalada. El complemento perfecto para tu mesa.', price: 60000, image: 'FOTOS/mishka/bandeja-sorrento/1.jpg', category: 'Hogar > Cocina > Accesorios de mesa' },
+
   // SUNDARA
   { id: 'bowl-sundara-rectangular', title: 'Bowl Rectangular Sundara 700 ml', description: 'Bowl rectangular 700 ml. Diseño orgánico y artesanal — ideal para presentaciones en la mesa.', price: 45900, image: 'FOTOS/mishka/bowl-sundara-rectangular/1.jpg', category: 'Hogar > Cocina > Vajilla' },
   { id: 'bowl-sundara-redondo', title: 'Bowl Redondo Sundara 1000 ml', description: 'Bowl redondo 1000 ml. Forma orgánica generosa — perfecto para pastas, ensaladas y servicio en mesa.', price: 47900, image: 'FOTOS/mishka/bowl-sundara-redondo/1.jpg', category: 'Hogar > Cocina > Vajilla' },
 
   // VASOS Y COPAS (VASSA)
+  { id: 'vasos-maja-x4', title: 'Set x4 Vasos Maja 420 ml', description: 'Set de 4 vasos de vidrio borosilicato 420 ml. Diseño clásico y versátil para agua, jugos o cócteles.', price: 61900, image: 'FOTOS/mishka/vasos-maja/1.jpg', category: 'Hogar > Cocina > Vasos y Copas' },
   { id: 'vasos-maja', title: 'Set x6 Vasos Maja 420 ml', description: 'Set de 6 vasos de vidrio 420 ml. Diseño clásico y versátil — para agua, jugos o cócteles.', price: 89900, image: 'FOTOS/mishka/vasos-maja/1.jpg', category: 'Hogar > Cocina > Vasos y Copas' },
+  { id: 'vasos-maja-black-x4', title: 'Set x4 Vasos Maja Black 420 ml', description: 'Set de 4 vasos de vidrio borosilicato ahumado negro 420 ml. Diseño sofisticado para cualquier mesa.', price: 52900, image: 'FOTOS/mishka/vasos-maja-black/1.jpg', category: 'Hogar > Cocina > Vasos y Copas' },
   { id: 'vasos-maja-black', title: 'Set x6 Vasos Maja Black 420 ml', description: 'Set de 6 vasos de vidrio ahumado negro 420 ml. Diseño sofisticado que eleva cualquier mesa.', price: 75900, image: 'FOTOS/mishka/vasos-maja-black/1.jpg', category: 'Hogar > Cocina > Vasos y Copas' },
+  { id: 'copas-fedra-x4', title: 'Set x4 Copas Fedra 330 ml', description: 'Set de 4 copas de vidrio borosilicato 330 ml. Para vinos blancos, rosados y espumantes.', price: 98900, image: 'FOTOS/mishka/copas-fedra/1.jpg', category: 'Hogar > Cocina > Vasos y Copas' },
   { id: 'copas-fedra', title: 'Set x6 Copas Fedra 330 ml', description: 'Set de 6 copas de vidrio 330 ml. Diseño elegante y fino — para vinos blancos, rosados y espumantes.', price: 143900, image: 'FOTOS/mishka/copas-fedra/1.jpg', category: 'Hogar > Cocina > Vasos y Copas' },
+  { id: 'copas-fedra-brown-x4', title: 'Set x4 Copas Fedra Brown 320 ml', description: 'Set de 4 copas de vidrio borosilicato ahumado marrón 320 ml. Tono cálido y sofisticado.', price: 114900, image: 'FOTOS/mishka/copas-fedra-brown/1.jpg', category: 'Hogar > Cocina > Vasos y Copas' },
   { id: 'copas-fedra-brown', title: 'Set x6 Copas Fedra Brown 320 ml', description: 'Set de 6 copas de vidrio ahumado marrón 320 ml. Diseño exclusivo con tono cálido y sofisticado.', price: 169900, image: 'FOTOS/mishka/copas-fedra-brown/1.jpg', category: 'Hogar > Cocina > Vasos y Copas' },
   { id: 'jarra-maja-black', title: 'Jarra Maja Black 1600 ml', description: 'Jarra de vidrio con funda tejida de rattan negro 1600 ml. Diseño artesanal único.', price: 66900, image: 'FOTOS/mishka/jarra-maja-black/1.jpg', category: 'Hogar > Cocina > Jarras' },
 
   // BOROSILICATO
   { id: 'mug-icon', title: 'Set x4 Mugs Irish Borosilicato 190 ml', description: 'Set de 4 mugs de vidrio borosilicato 190 ml. El mismo vidrio usado en medicina — resistente al calor.', price: 28900, image: 'FOTOS/mishka/mug-icon/1.jpg', category: 'Hogar > Cocina > Tazas y Mugs' },
+  { id: 'mug-icon-x6', title: 'Set x6 Mugs Irish Borosilicato 190 ml', description: 'Set de 4 mugs de vidrio borosilicato 190 ml. El mismo vidrio usado en medicina — resistente al calor.', price: 28900, image: 'FOTOS/mishka/mug-icon/1.jpg', category: 'Hogar > Cocina > Tazas y Mugs' },
+  { id: 'mug-icon-x6', title: 'Set x6 Mugs Irish Borosilicato 190 ml', description: 'Set de 6 mugs de vidrio borosilicato 190 ml. Resistente al calor — para café, té y mate cocido.', price: 43900, image: 'FOTOS/mishka/mug-icon/1.jpg', category: 'Hogar > Cocina > Tazas y Mugs' },
   { id: 'mug-net', title: 'Set x4 Mugs Vienna Borosilicato 200 ml', description: 'Set de 4 mugs de vidrio borosilicato 200 ml. Vidrio resistente al calor para café y té.', price: 39900, image: 'FOTOS/mishka/mug-net/1.jpg', category: 'Hogar > Cocina > Tazas y Mugs' },
+  { id: 'mug-net-x6', title: 'Set x6 Mugs Vienna Borosilicato 200 ml', description: 'Set de 6 mugs de vidrio borosilicato 200 ml. Vidrio resistente al calor para café y té.', price: 59900, image: 'FOTOS/mishka/mug-net/1.jpg', category: 'Hogar > Cocina > Tazas y Mugs' },
 
   // MADERA / ACACIA
+  { id: 'copetinero-redondo', title: 'Copetinero Redondo Acacia', description: 'Copetinero redondo hecho a mano en madera de acacia natural. 10 cm. Para aperitivos y picadas.', price: 23900, image: 'FOTOS/mishka/copetineros-acacia/1.jpg', category: 'Hogar > Cocina > Madera y Acacia' },
+  { id: 'copetinero-conico', title: 'Copetinero Cónico Acacia', description: 'Copetinero cónico hecho a mano en madera de acacia natural. Diseño elegante para aperitivos.', price: 23900, image: 'FOTOS/mishka/copetineros-acacia/1.jpg', category: 'Hogar > Cocina > Madera y Acacia' },
+  { id: 'copetinero-cuadrado', title: 'Copetinero Cuadrado Acacia', description: 'Copetinero cuadrado hecho a mano en madera de acacia natural. Diseño moderno para picadas.', price: 23900, image: 'FOTOS/mishka/copetineros-acacia/1.jpg', category: 'Hogar > Cocina > Madera y Acacia' },
   { id: 'copetineros-acacia', title: 'Set Copetineros Acacia Manila', description: 'Set de copetineros de madera de acacia natural. Ideales para aperitivos, picadas y presentaciones.', price: 23900, image: 'FOTOS/mishka/copetineros-acacia/1.jpg', category: 'Hogar > Cocina > Madera y Acacia' },
   { id: 'copetineros-porcelana', title: 'Set x4 Copetineros Porcelana + Base Bamboo 20x20 cm', description: 'Set de 4 copetineros de porcelana con base de bamboo negro 20x20 cm. Diseño premium.', price: 47900, image: 'FOTOS/mishka/copetineros-porcelana/1.jpg', category: 'Hogar > Cocina > Madera y Acacia' },
   { id: 'cuenco-acacia', title: 'Cuenco Ovalado Acacia Manila 26x20x6,5 cm', description: 'Cuenco ovalado de madera de acacia 26x20x6,5 cm. Pieza natural para servir y decorar.', price: 47900, image: 'FOTOS/mishka/cuenco-acacia/1.jpg', category: 'Hogar > Cocina > Madera y Acacia' },
