@@ -3,9 +3,31 @@
 <!-- v2 -->
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="p:domain_verify" content="dcdbd7ec1a59693b5ab81721c962d31f"/>
 <title>Country — Catálogo Home & Deco</title>
+
+<!-- PWA Core -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#2c1f0e">
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- iOS PWA — crítico para iPhone -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Country">
+<link rel="apple-touch-icon" href="/logo_country_500x500.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/logo_country_500x500.png">
+<link rel="apple-touch-icon" sizes="167x167" href="/logo_country_500x500.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/logo_country_500x500.png">
+
+<!-- Open Graph / compartir -->
+<meta property="og:title" content="Country Home & Deco">
+<meta property="og:description" content="Objetos de diseño para tu hogar. Vajilla, decoración y aromas.">
+<meta property="og:image" content="https://countryhomedeco.vercel.app/logo_country_500x500.png">
+<meta property="og:url" content="https://countryhomedeco.vercel.app">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
 <link href="https://fonts.googleapis.com/css2?family=Forum&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -3301,6 +3323,99 @@ function resetCatFilter() {
   document.querySelectorAll('.csn-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('#section-coleccion .product').forEach(p => p.style.display = '');
 }
+</script>
+
+<!-- ─── PWA: Banner instalación + Service Worker ──────── -->
+<div id="pwa-banner" style="display:none; position:fixed; bottom:80px; left:16px; right:16px; z-index:9999;
+  background:#2c1f0e; color:#f5ead8; border-radius:14px; padding:16px 18px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.35); font-family:'Work Sans',sans-serif;">
+  <div style="display:flex; align-items:center; gap:12px;">
+    <img src="/logo_country_500x500.png" style="width:44px; height:44px; border-radius:10px; flex-shrink:0;">
+    <div style="flex:1;">
+      <div style="font-weight:600; font-size:0.95em;">Instalar Country</div>
+      <div id="pwa-banner-msg" style="font-size:0.78em; opacity:0.8; margin-top:2px;">Agregá la app a tu pantalla de inicio</div>
+    </div>
+    <button id="pwa-install-btn" style="background:#c4a87a; color:#2c1f0e; border:none; border-radius:8px;
+      padding:8px 14px; font-weight:600; font-size:0.85em; cursor:pointer; flex-shrink:0;">
+      Instalar
+    </button>
+    <button onclick="document.getElementById('pwa-banner').style.display='none'"
+      style="background:none; border:none; color:#f5ead8; cursor:pointer; font-size:1.2em; padding:4px; opacity:0.7;">✕</button>
+  </div>
+  <div id="pwa-ios-steps" style="display:none; margin-top:12px; font-size:0.78em; opacity:0.85;
+    background:rgba(255,255,255,0.08); border-radius:8px; padding:10px 12px; line-height:1.8;">
+    1. Tocá el ícono <strong>Compartir</strong> (cuadrado con flecha) en Safari<br>
+    2. Elegí <strong>"Agregar a pantalla de inicio"</strong><br>
+    3. Tocá <strong>Agregar</strong> — listo
+  </div>
+</div>
+
+<script>
+// ─── PWA: Registro Service Worker ────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+      .catch(err => console.warn('SW error:', err));
+  });
+}
+
+// ─── PWA: Banner de instalación ──────────────────────────
+let _deferredPrompt = null;
+const _banner = document.getElementById('pwa-banner');
+const _installBtn = document.getElementById('pwa-install-btn');
+const _iosSteps = document.getElementById('pwa-ios-steps');
+const _bannerMsg = document.getElementById('pwa-banner-msg');
+
+function _isIOS() {
+  return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+}
+function _isInStandalone() {
+  return window.matchMedia('(display-mode: standalone)').matches
+    || navigator.standalone === true;
+}
+function _hasSeenBanner() {
+  return localStorage.getItem('country_pwa_dismissed');
+}
+
+// Android / Chrome: capturar el evento de instalación
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  _deferredPrompt = e;
+  if (!_isInStandalone() && !_hasSeenBanner()) {
+    setTimeout(() => { _banner.style.display = 'block'; }, 8000);
+  }
+});
+
+// iOS: mostrar banner con instrucciones manuales
+if (_isIOS() && !_isInStandalone() && !_hasSeenBanner()) {
+  setTimeout(() => {
+    _bannerMsg.textContent = 'Instalá la app en tu iPhone';
+    _installBtn.style.display = 'none';
+    _iosSteps.style.display = 'block';
+    _banner.style.display = 'block';
+  }, 8000);
+}
+
+// Click en "Instalar" (Android)
+_installBtn.addEventListener('click', async () => {
+  if (!_deferredPrompt) return;
+  _deferredPrompt.prompt();
+  const { outcome } = await _deferredPrompt.userChoice;
+  _deferredPrompt = null;
+  _banner.style.display = 'none';
+  localStorage.setItem('country_pwa_dismissed', '1');
+});
+
+// Cerrar banner — recordar para no molestar
+document.querySelectorAll('#pwa-banner button').forEach(b => {
+  b.addEventListener('click', () => localStorage.setItem('country_pwa_dismissed', '1'));
+});
+
+// App instalada
+window.addEventListener('appinstalled', () => {
+  _banner.style.display = 'none';
+  localStorage.setItem('country_pwa_dismissed', '1');
+});
 </script>
 
 </body>
