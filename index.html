@@ -3388,7 +3388,7 @@ function _isInStandalone() {
   return window.matchMedia('(display-mode: standalone)').matches
     || navigator.standalone === true;
 }
-const _BANNER_KEY = 'country_pwa_v2';
+const _BANNER_KEY = 'country_pwa_v3';
 function _hasSeenBanner() {
   return localStorage.getItem(_BANNER_KEY);
 }
@@ -3441,9 +3441,9 @@ _installBtn.addEventListener('click', async () => {
   }
 });
 
-// Cerrar banner — recordar para no molestar
-document.querySelectorAll('#pwa-banner button').forEach(b => {
-  b.addEventListener('click', () => localStorage.setItem(_BANNER_KEY, '1'));
+// Solo el botón X cierra definitivamente el banner
+document.querySelector('#pwa-banner button:last-child').addEventListener('click', () => {
+  localStorage.setItem(_BANNER_KEY, '1');
 });
 
 // App instalada
