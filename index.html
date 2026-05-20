@@ -3388,27 +3388,37 @@ function _isInStandalone() {
   return window.matchMedia('(display-mode: standalone)').matches
     || navigator.standalone === true;
 }
+const _BANNER_KEY = 'country_pwa_v2';
 function _hasSeenBanner() {
-  return localStorage.getItem('country_pwa_dismissed');
+  return localStorage.getItem(_BANNER_KEY);
 }
 
-// Android / Chrome: capturar el evento de instalación
+// Android / Chrome: capturar el evento de instalación nativo
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   _deferredPrompt = e;
   if (!_isInStandalone() && !_hasSeenBanner()) {
-    setTimeout(() => { _banner.style.display = 'block'; }, 8000);
+    setTimeout(() => { _banner.style.display = 'block'; }, 4000);
   }
 });
 
-// iOS: mostrar banner con instrucciones manuales
+// iOS Safari: instrucciones manuales
 if (_isIOS() && !_isInStandalone() && !_hasSeenBanner()) {
   setTimeout(() => {
     _bannerMsg.textContent = 'Instalá la app en tu iPhone';
     _installBtn.style.display = 'none';
     _iosSteps.style.display = 'block';
     _banner.style.display = 'block';
-  }, 8000);
+  }, 4000);
+}
+
+// Android fallback: mostrar banner aunque no dispare beforeinstallprompt
+if (!_isIOS() && !_isInStandalone() && !_hasSeenBanner()) {
+  setTimeout(() => {
+    if (_banner.style.display === 'none' || !_banner.style.display) {
+      _banner.style.display = 'block';
+    }
+  }, 5000);
 }
 
 // Click en "Instalar" (Android)
@@ -3418,18 +3428,18 @@ _installBtn.addEventListener('click', async () => {
   const { outcome } = await _deferredPrompt.userChoice;
   _deferredPrompt = null;
   _banner.style.display = 'none';
-  localStorage.setItem('country_pwa_dismissed', '1');
+  localStorage.setItem(_BANNER_KEY, '1');
 });
 
 // Cerrar banner — recordar para no molestar
 document.querySelectorAll('#pwa-banner button').forEach(b => {
-  b.addEventListener('click', () => localStorage.setItem('country_pwa_dismissed', '1'));
+  b.addEventListener('click', () => localStorage.setItem(_BANNER_KEY, '1'));
 });
 
 // App instalada
 window.addEventListener('appinstalled', () => {
   _banner.style.display = 'none';
-  localStorage.setItem('country_pwa_dismissed', '1');
+  localStorage.setItem(_BANNER_KEY, '1');
 });
 </script>
 
