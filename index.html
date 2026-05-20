@@ -3402,12 +3402,10 @@ window.addEventListener('beforeinstallprompt', e => {
   }
 });
 
-// iOS Safari: instrucciones manuales
+// iOS Safari: mostrar banner limpio, pasos aparecen al tocar "Instalar"
 if (_isIOS() && !_isInStandalone() && !_hasSeenBanner()) {
   setTimeout(() => {
     _bannerMsg.textContent = 'Instalá la app en tu iPhone';
-    _installBtn.style.display = 'none';
-    _iosSteps.style.display = 'block';
     _banner.style.display = 'block';
   }, 4000);
 }
