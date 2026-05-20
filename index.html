@@ -1734,7 +1734,7 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
     <div style="font-size:0.8em;color:#8a6840;letter-spacing:1px;margin-bottom:20px;line-height:1.8;">
       Andreani · Correo Argentino<br>A todo el país
     </div>
-    <button class="modal-btn" onclick="document.getElementById('modalShipping').classList.add('hidden');">Explorar la tienda</button>
+    <button class="modal-btn" onclick="document.getElementById('modalShipping').classList.add('hidden'); setTimeout(showPWABanner, 2000);">Explorar la tienda</button>
   </div>
 </div>
 
@@ -3397,26 +3397,15 @@ function _hasSeenBanner() {
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   _deferredPrompt = e;
-  if (!_isInStandalone() && !_hasSeenBanner()) {
-    setTimeout(() => { _banner.style.display = 'block'; }, 4000);
-  }
 });
 
-// iOS Safari: mostrar banner limpio, pasos aparecen al tocar "Instalar"
-if (_isIOS() && !_isInStandalone() && !_hasSeenBanner()) {
-  setTimeout(() => {
+// Mostrar banner PWA (se llama desde el segundo popup)
+function showPWABanner() {
+  if (_isInStandalone() || _hasSeenBanner()) return;
+  if (_isIOS()) {
     _bannerMsg.textContent = 'Instalá la app en tu iPhone';
-    _banner.style.display = 'block';
-  }, 4000);
-}
-
-// Android fallback: mostrar banner aunque no dispare beforeinstallprompt
-if (!_isIOS() && !_isInStandalone() && !_hasSeenBanner()) {
-  setTimeout(() => {
-    if (_banner.style.display === 'none' || !_banner.style.display) {
-      _banner.style.display = 'block';
-    }
-  }, 5000);
+  }
+  _banner.style.display = 'block';
 }
 
 // Click en "Instalar"
