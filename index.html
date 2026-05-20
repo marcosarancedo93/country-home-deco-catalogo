@@ -1431,6 +1431,21 @@
     .portada-feat:last-child { border-bottom: none; }
   }
 </style>
+<!-- OneSignal Push Notifications -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "ebc1f82f-952d-46f3-9ce5-fdc584f8004f",
+      safari_web_id: "web.onesignal.auto.ebc1f82f-952d-46f3-9ce5-fdc584f8004f",
+      notifyButton: { enable: false },
+      allowLocalhostAsSecureOrigin: false,
+    });
+  });
+</script>
+<!-- End OneSignal -->
+
 <!-- Meta Pixel -->
 <script>
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
