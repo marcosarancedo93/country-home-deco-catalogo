@@ -3421,14 +3421,24 @@ if (!_isIOS() && !_isInStandalone() && !_hasSeenBanner()) {
   }, 5000);
 }
 
-// Click en "Instalar" (Android)
+// Click en "Instalar"
 _installBtn.addEventListener('click', async () => {
-  if (!_deferredPrompt) return;
-  _deferredPrompt.prompt();
-  const { outcome } = await _deferredPrompt.userChoice;
-  _deferredPrompt = null;
-  _banner.style.display = 'none';
-  localStorage.setItem(_BANNER_KEY, '1');
+  if (_deferredPrompt) {
+    // Android Chrome: prompt nativo
+    _deferredPrompt.prompt();
+    const { outcome } = await _deferredPrompt.userChoice;
+    _deferredPrompt = null;
+    _banner.style.display = 'none';
+    localStorage.setItem(_BANNER_KEY, '1');
+  } else {
+    // Fallback: mostrar instrucciones manuales según dispositivo
+    _installBtn.style.display = 'none';
+    _iosSteps.innerHTML = _isIOS()
+      ? '1. Tocá <strong>Compartir</strong> (cuadrado con flecha) en Safari<br>2. Elegí <strong>"Agregar a pantalla de inicio"</strong><br>3. Tocá <strong>Agregar</strong>'
+      : '1. Tocá los <strong>tres puntos</strong> arriba a la derecha<br>2. Elegí <strong>"Agregar a pantalla de inicio"</strong> o <strong>"Instalar app"</strong><br>3. Confirmá';
+    _iosSteps.style.display = 'block';
+    _bannerMsg.textContent = 'Seguí estos pasos:';
+  }
 });
 
 // Cerrar banner — recordar para no molestar
