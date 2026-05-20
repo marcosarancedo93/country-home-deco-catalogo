@@ -1431,21 +1431,6 @@
     .portada-feat:last-child { border-bottom: none; }
   }
 </style>
-<!-- OneSignal Push Notifications -->
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "ebc1f82f-952d-46f3-9ce5-fdc584f8004f",
-      safari_web_id: "web.onesignal.auto.ebc1f82f-952d-46f3-9ce5-fdc584f8004f",
-      notifyButton: { enable: false },
-      allowLocalhostAsSecureOrigin: false,
-    });
-  });
-</script>
-<!-- End OneSignal -->
-
 <!-- Meta Pixel -->
 <script>
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -1734,7 +1719,7 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
     <div style="font-size:0.8em;color:#8a6840;letter-spacing:1px;margin-bottom:20px;line-height:1.8;">
       Andreani · Correo Argentino<br>A todo el país
     </div>
-    <button class="modal-btn" onclick="document.getElementById('modalShipping').classList.add('hidden'); setTimeout(showPWABanner, 2000);">Explorar la tienda</button>
+    <button class="modal-btn" onclick="document.getElementById('modalShipping').classList.add('hidden');">Explorar la tienda</button>
   </div>
 </div>
 
@@ -3340,31 +3325,6 @@ function resetCatFilter() {
 }
 </script>
 
-<!-- ─── PWA: Banner instalación + Service Worker ──────── -->
-<div id="pwa-banner" style="display:none; position:fixed; bottom:80px; left:16px; right:16px; z-index:9999;
-  background:#2c1f0e; color:#f5ead8; border-radius:14px; padding:16px 18px;
-  box-shadow:0 8px 32px rgba(0,0,0,0.35); font-family:'Work Sans',sans-serif;">
-  <div style="display:flex; align-items:center; gap:12px;">
-    <img src="/logo_country_500x500.png" style="width:44px; height:44px; border-radius:10px; flex-shrink:0;">
-    <div style="flex:1;">
-      <div style="font-weight:600; font-size:0.95em;">Instalar Country</div>
-      <div id="pwa-banner-msg" style="font-size:0.78em; opacity:0.8; margin-top:2px;">Agregá la app a tu pantalla de inicio</div>
-    </div>
-    <button id="pwa-install-btn" style="background:#c4a87a; color:#2c1f0e; border:none; border-radius:8px;
-      padding:8px 14px; font-weight:600; font-size:0.85em; cursor:pointer; flex-shrink:0;">
-      Instalar
-    </button>
-    <button onclick="document.getElementById('pwa-banner').style.display='none'"
-      style="background:none; border:none; color:#f5ead8; cursor:pointer; font-size:1.2em; padding:4px; opacity:0.7;">✕</button>
-  </div>
-  <div id="pwa-ios-steps" style="display:none; margin-top:12px; font-size:0.78em; opacity:0.85;
-    background:rgba(255,255,255,0.08); border-radius:8px; padding:10px 12px; line-height:1.8;">
-    1. Tocá el ícono <strong>Compartir</strong> (cuadrado con flecha) en Safari<br>
-    2. Elegí <strong>"Agregar a pantalla de inicio"</strong><br>
-    3. Tocá <strong>Agregar</strong> — listo
-  </div>
-</div>
-
 <script>
 // ─── PWA: Registro Service Worker ────────────────────────
 if ('serviceWorker' in navigator) {
@@ -3373,76 +3333,6 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.warn('SW error:', err));
   });
 }
-
-// ─── PWA: Banner de instalación ──────────────────────────
-let _deferredPrompt = null;
-const _banner = document.getElementById('pwa-banner');
-const _installBtn = document.getElementById('pwa-install-btn');
-const _iosSteps = document.getElementById('pwa-ios-steps');
-const _bannerMsg = document.getElementById('pwa-banner-msg');
-
-function _isIOS() {
-  return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
-}
-function _isInStandalone() {
-  return window.matchMedia('(display-mode: standalone)').matches
-    || navigator.standalone === true;
-}
-const _BANNER_KEY = 'country_pwa_v4';
-function _hasSeenBanner() {
-  return localStorage.getItem(_BANNER_KEY);
-}
-
-// Android / Chrome: capturar el evento de instalación nativo
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  _deferredPrompt = e;
-});
-
-// Mostrar banner PWA
-function showPWABanner() {
-  if (_isInStandalone() || _hasSeenBanner()) return;
-  if (_isIOS()) _bannerMsg.textContent = 'Instalá la app en tu iPhone';
-  _banner.style.display = 'block';
-}
-
-// Fallback: si el usuario no pasa por los popups, mostrar después de 15s
-setTimeout(() => {
-  if (_banner.style.display === 'none' || !_banner.style.display) {
-    showPWABanner();
-  }
-}, 15000);
-
-// Click en "Instalar"
-_installBtn.addEventListener('click', async () => {
-  if (_deferredPrompt) {
-    // Android Chrome: prompt nativo
-    _deferredPrompt.prompt();
-    const { outcome } = await _deferredPrompt.userChoice;
-    _deferredPrompt = null;
-    _banner.style.display = 'none';
-    localStorage.setItem(_BANNER_KEY, '1');
-  } else {
-    // Fallback: mostrar instrucciones manuales según dispositivo
-    _installBtn.style.display = 'none';
-    _iosSteps.innerHTML = _isIOS()
-      ? '1. Tocá <strong>Compartir</strong> (cuadrado con flecha) en Safari<br>2. Elegí <strong>"Agregar a pantalla de inicio"</strong><br>3. Tocá <strong>Agregar</strong>'
-      : '1. Tocá los <strong>tres puntos</strong> arriba a la derecha<br>2. Elegí <strong>"Agregar a pantalla de inicio"</strong> o <strong>"Instalar app"</strong><br>3. Confirmá';
-    _iosSteps.style.display = 'block';
-    _bannerMsg.textContent = 'Seguí estos pasos:';
-  }
-});
-
-// Solo el botón X cierra definitivamente el banner
-document.querySelector('#pwa-banner button:last-child').addEventListener('click', () => {
-  localStorage.setItem(_BANNER_KEY, '1');
-});
-
-// App instalada
-window.addEventListener('appinstalled', () => {
-  _banner.style.display = 'none';
-  localStorage.setItem(_BANNER_KEY, '1');
-});
 </script>
 
 </body>
