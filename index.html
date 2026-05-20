@@ -3388,7 +3388,7 @@ function _isInStandalone() {
   return window.matchMedia('(display-mode: standalone)').matches
     || navigator.standalone === true;
 }
-const _BANNER_KEY = 'country_pwa_v3';
+const _BANNER_KEY = 'country_pwa_v4';
 function _hasSeenBanner() {
   return localStorage.getItem(_BANNER_KEY);
 }
@@ -3399,14 +3399,19 @@ window.addEventListener('beforeinstallprompt', e => {
   _deferredPrompt = e;
 });
 
-// Mostrar banner PWA (se llama desde el segundo popup)
+// Mostrar banner PWA
 function showPWABanner() {
   if (_isInStandalone() || _hasSeenBanner()) return;
-  if (_isIOS()) {
-    _bannerMsg.textContent = 'Instalá la app en tu iPhone';
-  }
+  if (_isIOS()) _bannerMsg.textContent = 'Instalá la app en tu iPhone';
   _banner.style.display = 'block';
 }
+
+// Fallback: si el usuario no pasa por los popups, mostrar después de 15s
+setTimeout(() => {
+  if (_banner.style.display === 'none' || !_banner.style.display) {
+    showPWABanner();
+  }
+}, 15000);
 
 // Click en "Instalar"
 _installBtn.addEventListener('click', async () => {
