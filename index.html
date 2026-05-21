@@ -1752,6 +1752,7 @@
     margin-bottom: 8px;
   }
   .pm-stock-badge.low { background: #d27800; }
+  .pm-stock-badge.instock { background: #4a7c3f; }
 
   /* ─── AVISAME ───────────────────────────────────────────── */
   .pm-wsp-btn {
@@ -2398,7 +2399,7 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
       <input id="sub-wsp" type="tel" placeholder="WhatsApp (ej: 1131655653)" autocomplete="tel"
         style="width:100%; padding:11px 14px; border:1.5px solid #d4c4a8; border-radius:8px; font-family:'Work Sans',sans-serif;
         font-size:0.88em; color:#2c1f0e; background:#faf7f2; margin-bottom:10px; box-sizing:border-box;">
-      <input id="sub-email" type="email" placeholder="Email (opcional)" autocomplete="email"
+      <input id="sub-email" type="email" placeholder="Mail" autocomplete="email"
         style="width:100%; padding:11px 14px; border:1.5px solid #d4c4a8; border-radius:8px; font-family:'Work Sans',sans-serif;
         font-size:0.88em; color:#2c1f0e; background:#faf7f2; margin-bottom:12px; box-sizing:border-box;">
       <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; font-size:0.78em; color:#6a5a40; line-height:1.5;">
@@ -3192,7 +3193,7 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
       <div class="pm-price" id="pm-price"></div>
     </div>
     <button class="pm-add-btn" id="pm-add-btn">+ Agregar al carrito</button>
-    <button class="pm-notify-btn no-print" onclick="openNotifySheet()">🔔 Avisame cuando haya novedades</button>
+    <button class="pm-notify-btn no-print" onclick="openNotifySheet()">🔔 Novedades y precios especiales</button>
     <div class="pm-section">
       <div class="pm-section-header" onclick="pmToggleDesc()">
         <span class="pm-section-title">Descripción</span>
@@ -4091,13 +4092,16 @@ function openProductModal(prod, idx) {
   const existingBadge = document.getElementById('pm-stock-badge');
   if (existingBadge) existingBadge.remove();
   const stockCfg = getStockBadgeForProduct(pmProdName);
+  const badge = document.createElement('div');
+  badge.id = 'pm-stock-badge';
   if (stockCfg) {
-    const badge = document.createElement('div');
-    badge.id = 'pm-stock-badge';
     badge.className = `pm-stock-badge${stockCfg.type === 'low' ? ' low' : ''}`;
     badge.textContent = stockCfg.label;
-    document.getElementById('pm-tag').insertAdjacentElement('afterend', badge);
+  } else {
+    badge.className = 'pm-stock-badge instock';
+    badge.textContent = '✓ En stock';
   }
+  document.getElementById('pm-tag').insertAdjacentElement('afterend', badge);
 
   // Reviews de clientes
   renderReviews(pmProdName);
@@ -4920,11 +4924,10 @@ function initAbandonTracking() {
   });
 }
 
-// ─── PWA: Registro Service Worker ────────────────────────
+// ─── PWA: Service Worker desactivado ─────────────────────
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js', { scope: '/' })
-      .catch(err => console.warn('SW error:', err));
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(r => r.unregister());
   });
 }
 </script>

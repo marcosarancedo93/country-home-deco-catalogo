@@ -4,7 +4,7 @@
   "description": "Catálogo de objetos de diseño para tu hogar",
   "start_url": "/",
   "scope": "/",
-  "display": "standalone",
+  "display": "browser",
   "orientation": "portrait",
   "background_color": "#f5f0eb",
   "theme_color": "#2c1f0e",
