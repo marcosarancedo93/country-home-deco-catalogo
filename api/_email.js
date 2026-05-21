@@ -79,113 +79,102 @@ function buildAdminHTML({ buyer, items, shipping, total, paymentId, type }) {
 function buildBuyerHTML({ buyerName, items, shipping, total, type }) {
   const itemsHTML = (items || []).map(i =>
     `<tr>
-      <td style="padding:8px 0;border-bottom:1px solid #f0e8d8;font-size:0.9em;color:#3a2e20;">${i.name || i.title}</td>
-      <td style="padding:8px 0;border-bottom:1px solid #f0e8d8;text-align:center;font-size:0.9em;color:#8a6840;">${i.qty || i.quantity}</td>
-      <td style="padding:8px 0;border-bottom:1px solid #f0e8d8;text-align:right;font-size:0.9em;color:#3a2e20;">${fmt((i.price || i.unit_price) * (i.qty || i.quantity))}</td>
+      <td style="padding:8px 0;border-bottom:1px solid #f0e8d8;font-size:0.88em;color:#3a2e20;">${i.name || i.title}</td>
+      <td style="padding:8px 0;border-bottom:1px solid #f0e8d8;text-align:center;font-size:0.88em;color:#8a6840;">${i.qty || i.quantity}</td>
+      <td style="padding:8px 0;border-bottom:1px solid #f0e8d8;text-align:right;font-size:0.88em;color:#3a2e20;">${fmt((i.price || i.unit_price) * (i.qty || i.quantity))}</td>
     </tr>`
   ).join('');
 
   const paymentNote = type === 'transfer'
-    ? `<div style="background:#f5ead8;border-left:3px solid #c4a87a;padding:12px 16px;margin:20px 0;font-size:0.88em;color:#3a2e20;">
-        <strong>Próximo paso:</strong> Verificamos tu transferencia y te confirmamos el envío a la brevedad.
-       </div>`
-    : `<div style="background:#f5ead8;border-left:3px solid #c4a87a;padding:12px 16px;margin:20px 0;font-size:0.88em;color:#3a2e20;">
-        <strong>Pago acreditado.</strong> Estamos preparando tu pedido para enviarlo.
-       </div>`;
+    ? `<div style="background:#f5ead8;border-left:3px solid #c4a87a;padding:10px 14px;margin-bottom:16px;font-size:0.85em;color:#3a2e20;"><strong>Próximo paso:</strong> Verificamos tu transferencia y te confirmamos el envío.</div>`
+    : `<div style="background:#f5ead8;border-left:3px solid #c4a87a;padding:10px 14px;margin-bottom:16px;font-size:0.85em;color:#3a2e20;"><strong>Pago acreditado.</strong> Estamos preparando tu pedido para enviarlo.</div>`;
 
-  const stripTop = 'https://countryhomedeco.vercel.app/collage/strip_top.jpg';
-  const stripBot = 'https://countryhomedeco.vercel.app/collage/strip_bottom.jpg';
+  const reviewLinks = (items || []).map(i => {
+    const nombre = i.name || i.title || '';
+    const link = `https://countryhomedeco.vercel.app/?resena=${encodeURIComponent(nombre)}`;
+    return `<a href="${link}" style="display:inline-block;margin:4px;padding:7px 14px;background:#2c1f0e;color:#f5ead8;border-radius:20px;font-size:0.8em;text-decoration:none;">⭐ Opinar sobre ${nombre}</a>`;
+  }).join('');
 
-  return `
-  <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;background:#f5f0eb;">
+  const B = 'https://countryhomedeco.vercel.app/collage';
 
-    <!-- Collage strip top -->
-    <div style="width:100%;overflow:hidden;line-height:0;">
-      <img src="${stripTop}" alt="" width="600" height="200" style="display:block;width:100%;height:200px;object-fit:cover;object-position:center;" />
-    </div>
+  return `<!DOCTYPE html>
+<html><head><meta charset="utf-8"></head><body style="margin:0;padding:20px 0;background:#e8e0d5;">
+<table width="600" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;background:#f5f0eb;">
 
-    <!-- Separador con logo -->
-    <div style="background:#2c1f0e;padding:18px 28px;text-align:center;">
-      <div style="font-size:1.6em;font-weight:300;letter-spacing:10px;color:#f5ead8;text-transform:uppercase;">Country</div>
-      <div style="font-size:0.62em;letter-spacing:4px;color:#c4a87a;margin-top:3px;">HOME & DECO</div>
-    </div>
+  <tr>
+    <td colspan="3" style="padding:0;line-height:0;">
+      <img src="${B}/strip_top.jpg" width="600" height="160" style="display:block;width:600px;height:160px;object-fit:cover;" alt="" />
+    </td>
+  </tr>
 
-    <!-- Contenido del email -->
-    <div style="background:#ffffff;margin:0;border-left:1px solid #e8d5b5;border-right:1px solid #e8d5b5;">
-  <div style="font-family:'Helvetica Neue',sans-serif;max-width:560px;margin:0 auto;background:#ffffff;overflow:hidden;">
+  <tr>
+    <td width="80" valign="top" style="padding:0;line-height:0;background:#2c1f0e;">
+      <img src="${B}/strip_left.jpg" width="80" style="display:block;width:80px;" alt="" />
+    </td>
 
-    <!-- Header -->
-    <div style="background:#2c1f0e;padding:32px 28px;text-align:center;">
-      <div style="font-size:2em;font-weight:300;letter-spacing:12px;color:#f5ead8;text-transform:uppercase;margin-bottom:6px;">Country</div>
-      <div style="width:60px;height:1px;background:#c4a87a;margin:0 auto 8px;"></div>
-      <div style="font-size:0.68em;letter-spacing:5px;color:#c4a87a;text-transform:uppercase;">Home & Deco</div>
-    </div>
-
-    <!-- Gracias -->
-    <div style="background:#f5ead8;padding:28px 28px 20px;text-align:center;">
-      <div style="font-size:1.6em;color:#2c1f0e;font-weight:300;letter-spacing:1px;margin-bottom:8px;">¡Gracias por tu compra, ${buyerName?.split(' ')[0] || ''}!</div>
-      <div style="font-size:0.9em;color:#6a4f30;line-height:1.6;">Recibimos tu pedido y ya estamos trabajando en él.<br>Te avisamos cuando esté listo para despachar.</div>
-    </div>
-
-    <!-- Contenido -->
-    <div style="padding:24px 28px;">
-      ${paymentNote}
-
-      <h3 style="margin:0 0 12px;color:#2c1f0e;font-size:0.9em;text-transform:uppercase;letter-spacing:2px;">Tu pedido</h3>
-      <table style="width:100%;margin-bottom:20px;">
-        <thead>
-          <tr>
-            <th style="text-align:left;color:#8a6840;font-weight:400;font-size:0.8em;padding-bottom:8px;text-transform:uppercase;letter-spacing:1px;">Producto</th>
-            <th style="text-align:center;color:#8a6840;font-weight:400;font-size:0.8em;padding-bottom:8px;text-transform:uppercase;letter-spacing:1px;">Cant.</th>
-            <th style="text-align:right;color:#8a6840;font-weight:400;font-size:0.8em;padding-bottom:8px;text-transform:uppercase;letter-spacing:1px;">Subtotal</th>
-          </tr>
-        </thead>
-        <tbody>${itemsHTML}</tbody>
-      </table>
-
-      <table style="width:100%;font-size:0.9em;color:#3a2e20;">
+    <td width="440" valign="top" style="padding:0;background:#ffffff;">
+      <table width="440" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td style="color:#8a6840;padding:4px 0;">Envío — ${shipping?.label || '—'}</td>
-          <td style="text-align:right;padding:4px 0;">${fmt(shipping?.cost || 0)}</td>
+          <td style="background:#2c1f0e;padding:22px 20px;text-align:center;">
+            <div style="font-size:22px;font-weight:300;letter-spacing:8px;color:#f5ead8;text-transform:uppercase;font-family:Georgia,serif;">Country</div>
+            <div style="width:50px;height:1px;background:#c4a87a;margin:6px auto;"></div>
+            <div style="font-size:10px;letter-spacing:4px;color:#c4a87a;text-transform:uppercase;font-family:Arial,sans-serif;">Home &amp; Deco</div>
+          </td>
         </tr>
         <tr>
-          <td style="font-weight:700;font-size:1.05em;padding-top:10px;border-top:2px solid #2c1f0e;">TOTAL</td>
-          <td style="text-align:right;font-weight:700;font-size:1.05em;padding-top:10px;border-top:2px solid #2c1f0e;">${fmt(total)}</td>
+          <td style="background:#f5ead8;padding:22px 20px;text-align:center;">
+            <div style="font-size:20px;color:#2c1f0e;font-weight:300;font-family:Georgia,serif;">¡Gracias por tu compra, ${(buyerName || '').split(' ')[0]}!</div>
+            <div style="font-size:13px;color:#6a4f30;margin-top:8px;line-height:1.6;font-family:Arial,sans-serif;">Recibimos tu pedido y ya estamos trabajando en él.<br>Te avisamos cuando esté listo para despachar.</div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:20px;font-family:Arial,sans-serif;">
+            ${paymentNote}
+            <p style="margin:0 0 10px;color:#2c1f0e;font-size:11px;text-transform:uppercase;letter-spacing:2px;font-weight:700;">Tu pedido</p>
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:14px;">
+              <thead><tr>
+                <th style="text-align:left;color:#8a6840;font-weight:400;font-size:11px;padding-bottom:6px;">Producto</th>
+                <th style="text-align:center;color:#8a6840;font-weight:400;font-size:11px;padding-bottom:6px;">Cant.</th>
+                <th style="text-align:right;color:#8a6840;font-weight:400;font-size:11px;padding-bottom:6px;">Subtotal</th>
+              </tr></thead>
+              <tbody>${itemsHTML}</tbody>
+            </table>
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:13px;color:#3a2e20;">
+              <tr><td style="color:#8a6840;padding:3px 0;">Envío — ${shipping?.label || '—'}</td><td style="text-align:right;">${fmt(shipping?.cost || 0)}</td></tr>
+              <tr><td style="font-weight:700;padding-top:8px;border-top:2px solid #2c1f0e;">TOTAL</td><td style="text-align:right;font-weight:700;padding-top:8px;border-top:2px solid #2c1f0e;">${fmt(total)}</td></tr>
+            </table>
+            <div style="margin-top:20px;padding:16px;background:#f5ead8;border-radius:6px;text-align:center;">
+              <div style="font-size:13px;font-weight:600;color:#2c1f0e;margin-bottom:4px;">Contanos cómo te fue 🙏</div>
+              <div style="font-size:11px;color:#6a4f30;margin-bottom:10px;">Tu opinión ayuda a otros clientes.</div>
+              ${reviewLinks}
+            </div>
+            <div style="margin-top:16px;padding-top:14px;border-top:1px solid #f0e8d8;text-align:center;font-size:12px;color:#8a6840;line-height:1.8;">
+              ¿Consultas? <a href="https://wa.me/541131655653" style="color:#2c1f0e;font-weight:600;text-decoration:none;">+54 9 11 3165-5653</a>
+              &nbsp;·&nbsp;
+              <a href="https://instagram.com/country.homedeco" style="color:#2c1f0e;font-weight:600;text-decoration:none;">@country.homedeco</a>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#2c1f0e;padding:14px 20px;text-align:center;">
+            <div style="font-size:10px;letter-spacing:3px;color:#c4a87a;text-transform:uppercase;font-family:Arial,sans-serif;">Feel at Home</div>
+          </td>
         </tr>
       </table>
+    </td>
 
-      <!-- Reseña -->
-      <div style="margin-top:28px;padding:20px;background:#f5ead8;border-radius:8px;text-align:center;">
-        <div style="font-size:0.95em;font-weight:600;color:#2c1f0e;margin-bottom:6px;">Contanos como te fue 🙏</div>
-        <div style="font-size:0.82em;color:#6a4f30;margin-bottom:14px;">Tu opinión ayuda a otros clientes a elegir.</div>
-        ${(items || []).map(i => {
-          const nombre = i.name || i.title || '';
-          const link = `https://countryhomedeco.vercel.app/?resena=${encodeURIComponent(nombre)}`;
-          return `<a href="${link}" style="display:inline-block;margin:4px;padding:8px 16px;background:#2c1f0e;color:#f5ead8;border-radius:20px;font-size:0.82em;text-decoration:none;letter-spacing:0.5px;">⭐ Opinar sobre ${nombre}</a>`;
-        }).join('')}
-      </div>
+    <td width="80" valign="top" style="padding:0;line-height:0;background:#2c1f0e;">
+      <img src="${B}/strip_right.jpg" width="80" style="display:block;width:80px;" alt="" />
+    </td>
+  </tr>
 
-      <!-- Contacto -->
-      <div style="margin-top:28px;padding-top:20px;border-top:1px solid #f0e8d8;text-align:center;font-size:0.84em;color:#8a6840;line-height:1.8;">
-        ¿Tenés alguna consulta? Escribinos por WhatsApp<br>
-        <a href="https://wa.me/541131655653" style="color:#2c1f0e;font-weight:600;text-decoration:none;">+54 9 11 3165-5653</a>
-        &nbsp;·&nbsp;
-        <a href="https://instagram.com/country.homedeco" style="color:#2c1f0e;font-weight:600;text-decoration:none;">@country.homedeco</a>
-      </div>
-    </div>
+  <tr>
+    <td colspan="3" style="padding:0;line-height:0;">
+      <img src="${B}/strip_bottom.jpg" width="600" height="160" style="display:block;width:600px;height:160px;object-fit:cover;" alt="" />
+    </td>
+  </tr>
 
-    <!-- Footer -->
-    <div style="background:#2c1f0e;padding:16px 28px;text-align:center;">
-      <div style="font-size:0.72em;letter-spacing:3px;color:#c4a87a;text-transform:uppercase;">Feel at Home</div>
-    </div>
-
-  </div>
-    </div>
-
-    <!-- Collage strip bottom -->
-    <img src="https://countryhomedeco.vercel.app/collage/strip_bottom.jpg" alt="" width="600" style="display:block;width:100%;height:200px;object-fit:cover;object-position:center;" />
-
-  </div>`;
+</table>
+</body></html>`;
 }
-
 module.exports = { sendEmail, buildAdminHTML, buildBuyerHTML };
