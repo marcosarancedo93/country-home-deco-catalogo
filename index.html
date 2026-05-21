@@ -3897,16 +3897,35 @@ function pmNav(dir) {
 
 function pmGoTo(i) { pmIndex = i; pmRefresh(); }
 
-// Touch swipe on product modal photo
+// Touch swipe on product modal photo — con drag visual
 (function() {
-  let sx = 0;
+  let sx = 0, dragging = false;
   document.addEventListener('DOMContentLoaded', () => {
     const wrap = document.getElementById('pm-photo-wrap');
     if (!wrap) return;
-    wrap.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+    const img = document.getElementById('pm-photo');
+
+    wrap.addEventListener('touchstart', e => {
+      sx = e.touches[0].clientX;
+      dragging = true;
+      img.style.transition = 'none';
+    }, { passive: true });
+
+    wrap.addEventListener('touchmove', e => {
+      if (!dragging) return;
+      const dx = e.touches[0].clientX - sx;
+      const limit = wrap.offsetWidth * 0.4;
+      const clamped = Math.max(-limit, Math.min(limit, dx));
+      img.style.transform = `translateX(${clamped}px) scale(${1 - Math.abs(clamped) / (wrap.offsetWidth * 4)})`;
+    }, { passive: true });
+
     wrap.addEventListener('touchend', e => {
+      if (!dragging) return;
+      dragging = false;
       const diff = sx - e.changedTouches[0].clientX;
-      if (Math.abs(diff) > 40) pmNav(diff > 0 ? 1 : -1);
+      img.style.transition = 'transform 0.25s cubic-bezier(0.4,0,0.2,1)';
+      img.style.transform = '';
+      if (Math.abs(diff) > 50) pmNav(diff > 0 ? 1 : -1);
     }, { passive: true });
   });
 })();
