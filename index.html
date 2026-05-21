@@ -3163,7 +3163,7 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
 <div class="product-modal-overlay" id="product-modal">
   <div class="product-modal" id="product-modal-inner">
     <div class="pm-topbar">
-      <button class="pm-back" onclick="closeProductModal()">&#8592;</button>
+      <button class="pm-back" id="pm-back">&#8592;</button>
       <div class="pm-topbar-brand">Country</div>
       <button class="pm-share-btn" id="pm-share-btn" onclick="shareCurrentProduct()" aria-label="Compartir">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
@@ -4195,6 +4195,15 @@ function pmGoTo(i) { pmIndex = i; pmRefresh(); }
 (function() {
   let sx = 0, dragging = false;
   document.addEventListener('DOMContentLoaded', () => {
+    // Prevenir ghost click en botón volver — usar touchend + preventDefault
+    const backBtn = document.getElementById('pm-back');
+    if (backBtn) {
+      backBtn.addEventListener('touchend', e => {
+        e.preventDefault();
+        closeProductModal();
+      }, { passive: false });
+    }
+
     const wrap = document.getElementById('pm-photo-wrap');
     if (!wrap) return;
     const img = document.getElementById('pm-photo');
