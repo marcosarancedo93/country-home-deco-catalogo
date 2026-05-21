@@ -1041,6 +1041,35 @@
     display: flex; align-items: center;
   }
 
+  /* Modal overlay actions (heart + WA) */
+  .pm-overlay-actions {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 10;
+  }
+  .pm-overlay-wish, .pm-overlay-wsp {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.92);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    -webkit-tap-highlight-color: transparent;
+    text-decoration: none;
+    transition: transform 0.15s, background 0.15s;
+  }
+  .pm-overlay-wsp { background: #25d366; }
+  .pm-overlay-wish:hover, .pm-overlay-wsp:hover { transform: scale(1.1); }
+  .pm-overlay-wish.active svg { fill: #e05a5a; }
+
   /* Photo */
   .pm-photo-wrap {
     position: relative;
@@ -3133,15 +3162,21 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
     <div class="pm-topbar">
       <button class="pm-back" onclick="closeProductModal()">&#8592;</button>
       <div class="pm-topbar-brand">Country</div>
-      <button class="pm-share-btn" id="pm-share-btn" onclick="shareCurrentProduct()" aria-label="Compartir">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-      </button>
+
     </div>
     <div class="pm-photo-wrap" id="pm-photo-wrap">
       <img class="pm-photo" id="pm-photo" src="" alt="">
       <button class="pm-arrow pm-prev" id="pm-prev" onclick="pmNav(-1)">&#8249;</button>
       <button class="pm-arrow pm-next" id="pm-next" onclick="pmNav(1)">&#8250;</button>
       <div class="pm-counter" id="pm-counter">1 / 1</div>
+      <div class="pm-overlay-actions">
+        <button class="pm-overlay-wish" id="pm-overlay-wish" aria-label="Favoritos">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e05a5a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <a class="pm-overlay-wsp" id="pm-overlay-wsp" href="#" target="_blank" aria-label="WhatsApp">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.549 4.126 1.514 5.874L.057 23.204a.75.75 0 0 0 .916.916l5.33-1.457A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.907 0-3.686-.5-5.23-1.375l-.374-.217-3.882 1.061 1.061-3.882-.217-.374A9.953 9.953 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        </a>
+      </div>
     </div>
     <div class="pm-thumbs" id="pm-thumbs"></div>
     <div class="pm-info">
@@ -3159,10 +3194,6 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
     </div>
     <div class="pm-reviews" id="pm-reviews"></div>
     <div class="pm-related" id="pm-related"></div>
-    <a class="pm-wsp-btn no-print" id="pm-wsp-btn" href="#" target="_blank" onclick="fbq('track','Contact',{content_name:'WhatsApp producto'})">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.549 4.126 1.514 5.874L.057 23.204a.75.75 0 0 0 .916.916l5.33-1.457A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.907 0-3.686-.5-5.23-1.375l-.374-.217-3.882 1.061 1.061-3.882-.217-.374A9.953 9.953 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
-      Consultar por WhatsApp
-    </a>
     <button class="pm-notify-btn no-print" onclick="openNotifySheet()">🔔 Avisame cuando haya novedades</button>
   </div>
 </div>
@@ -4066,12 +4097,30 @@ function openProductModal(prod, idx) {
   renderRelated(pmProdName, tag);
 
   // WhatsApp directo con texto del producto
-  const wspBtn = document.getElementById('pm-wsp-btn');
   const _wspMsg = `Hola! Vi el *${pmProdName}* en el catálogo y quiero consultar. ¿Tienen disponibilidad?`;
   const _wspHref = `https://wa.me/541131655653?text=${encodeURIComponent(_wspMsg)}`;
-  if (wspBtn) {
-    wspBtn.href = _wspHref;
-    wspBtn.addEventListener('click', clearAbandonCandidate, { once: true });
+
+  // Overlay WA en foto
+  const overlayWsp = document.getElementById('pm-overlay-wsp');
+  if (overlayWsp) {
+    overlayWsp.href = _wspHref;
+    overlayWsp.onclick = () => { clearAbandonCandidate(); fbq('track','Contact',{content_name:'WhatsApp producto'}); };
+  }
+
+  // Overlay corazón en foto
+  const overlayWish = document.getElementById('pm-overlay-wish');
+  if (overlayWish) {
+    overlayWish.classList.toggle('active', wishlist.some(w => w.id === pmProdId.replace('prod-','')));
+    overlayWish.onclick = (e) => {
+      e.stopPropagation();
+      const img = pmProdEl.querySelector('.main-photo');
+      const priceEl = pmProdEl.querySelector('.product-price');
+      const item = { id: pmProdName, name: pmProdName, price: priceEl ? priceEl.textContent.trim() : '', photo: img ? img.src : '' };
+      toggleWish(item);
+      overlayWish.classList.toggle('active', wishlist.some(w => w.id === pmProdName));
+      overlayWish.style.transform = 'scale(1.3)';
+      setTimeout(() => { overlayWish.style.transform = ''; }, 200);
+    };
   }
 
   // Registrar candidato de abandono
