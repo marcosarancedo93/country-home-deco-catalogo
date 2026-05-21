@@ -1661,6 +1661,62 @@
   }
   .search-empty.visible { display: block; }
 
+  /* ─── HISTORIAL ─────────────────────────────────────────── */
+  .history-strip {
+    max-width: 1100px;
+    margin: 0 auto 24px;
+    padding: 0 20px;
+    display: none;
+  }
+  .history-strip.visible { display: block; }
+  .history-label {
+    font-size: 0.65em;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #8a6840;
+    margin-bottom: 10px;
+    font-family: 'Work Sans', sans-serif;
+  }
+  .history-items {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+  }
+  .history-items::-webkit-scrollbar { display: none; }
+  .history-item {
+    flex-shrink: 0;
+    width: 90px;
+    cursor: pointer;
+    text-align: center;
+  }
+  .history-item img {
+    width: 90px; height: 90px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1.5px solid #e8ddd0;
+    transition: border-color 0.15s;
+    display: block;
+  }
+  .history-item:hover img { border-color: #8a6840; }
+  .history-item-name {
+    font-size: 0.68em;
+    color: #2c1f0e;
+    margin-top: 5px;
+    line-height: 1.3;
+    font-family: 'Work Sans', sans-serif;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .history-item-price {
+    font-size: 0.65em;
+    color: #8a6840;
+    margin-top: 2px;
+  }
+
   /* ─── COMPARTIR ─────────────────────────────────────────── */
   .share-btn {
     position: absolute;
@@ -2153,6 +2209,11 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
   <button class="csn-btn" data-cat="mesa" onclick="filterCat('mesa')">Mesa y Cocina</button>
   <button class="csn-btn" data-cat="decoracion" onclick="filterCat('decoracion')">Decoración</button>
   <button class="csn-btn" data-cat="ambiente" onclick="filterCat('ambiente')">Ambiente</button>
+</div>
+
+<div class="history-strip no-print" id="history-strip">
+  <div class="history-label">Seguí viendo</div>
+  <div class="history-items" id="history-items"></div>
 </div>
 
 <div class="search-wrap no-print">
@@ -3862,6 +3923,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initShareButtons();
   initZoom();
   initSearchEmpty();
+  initHistory();
 });
 
 // ─── COMPARTIR ─────────────────────────────────────────────
@@ -3956,6 +4018,71 @@ function closeZoom(e) {
   if (e && e.target !== document.getElementById('zoom-overlay') && !e.target.classList.contains('zoom-close')) return;
   document.getElementById('zoom-overlay').classList.remove('open');
   document.body.style.overflow = '';
+}
+
+// ─── HISTORIAL DE VISTOS ───────────────────────────────────
+const HISTORY_KEY = 'country_history';
+const HISTORY_MAX = 8;
+
+function initHistory() {
+  renderHistoryStrip();
+  trackViewedProducts();
+}
+
+function getHistory() {
+  return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+}
+
+function addToHistory(item) {
+  let hist = getHistory().filter(h => h.id !== item.id);
+  hist.unshift(item);
+  if (hist.length > HISTORY_MAX) hist = hist.slice(0, HISTORY_MAX);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
+  renderHistoryStrip();
+}
+
+function renderHistoryStrip() {
+  const hist = getHistory();
+  const strip = document.getElementById('history-strip');
+  const container = document.getElementById('history-items');
+  if (!strip || !container || hist.length < 2) { if (strip) strip.classList.remove('visible'); return; }
+  strip.classList.add('visible');
+  container.innerHTML = hist.map(h => `
+    <div class="history-item" onclick="openZoom(${JSON.stringify(h.photo)})">
+      <img src="${h.photo}" alt="${h.name}" loading="lazy">
+      <div class="history-item-name">${h.name}</div>
+      <div class="history-item-price">${h.price}</div>
+    </div>
+  `).join('');
+}
+
+function trackViewedProducts() {
+  if (!('IntersectionObserver' in window)) return;
+  const timers = new Map();
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const prod = entry.target;
+      if (entry.isIntersecting) {
+        timers.set(prod, setTimeout(() => {
+          const nameEl = prod.querySelector('.product-name');
+          const priceEl = prod.querySelector('.product-price');
+          const img = prod.querySelector('.main-photo');
+          if (!nameEl || !img) return;
+          addToHistory({
+            id: nameEl.textContent.trim(),
+            name: nameEl.textContent.trim(),
+            price: priceEl ? priceEl.textContent.trim() : '',
+            photo: img.src
+          });
+        }, 2000));
+      } else {
+        clearTimeout(timers.get(prod));
+        timers.delete(prod);
+      }
+    });
+  }, { threshold: 0.6 });
+
+  document.querySelectorAll('#section-coleccion .product').forEach(p => observer.observe(p));
 }
 
 // ─── BÚSQUEDA ──────────────────────────────────────────────
