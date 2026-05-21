@@ -13,8 +13,8 @@ export default async function handler(req, res) {
   try {
     const { nombre, whatsapp, email, ciudad, barrio, gps_lat, gps_lng, acepta_ubicacion, dispositivo, canal } = req.body;
 
-    if (!nombre || !whatsapp) {
-      return res.status(400).json({ error: 'Nombre y WhatsApp son requeridos' });
+    if (!nombre) {
+      return res.status(400).json({ error: 'Nombre es requerido' });
     }
 
     const record = {

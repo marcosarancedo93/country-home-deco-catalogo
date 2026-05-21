@@ -4063,8 +4063,21 @@ function initWishlist() {
 
 function toggleWish(item) {
   const idx = wishlist.findIndex(w => w.id === item.id);
-  if (idx >= 0) wishlist.splice(idx, 1);
-  else wishlist.push(item);
+  if (idx >= 0) {
+    wishlist.splice(idx, 1);
+  } else {
+    wishlist.push(item);
+    // Track en Airtable en background (silencioso)
+    fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre: 'Visitante',
+        canal: `Favorito: ${item.name}`,
+        dispositivo: navigator.userAgent
+      })
+    }).catch(() => {});
+  }
   localStorage.setItem('country_wishlist', JSON.stringify(wishlist));
   updateWishCount();
 }
