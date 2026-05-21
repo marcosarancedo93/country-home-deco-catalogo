@@ -1478,6 +1478,10 @@
     z-index: 3;
     box-shadow: 0 1px 6px rgba(0,0,0,0.12);
   }
+  .wish-btn {
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.18s, transform 0.18s;
+  }
   .wish-btn:hover { transform: scale(1.12); }
   .wish-btn svg { transition: fill 0.18s, stroke 0.18s; }
   .wish-btn.active svg { fill: #e05a5a; stroke: #e05a5a; }
@@ -1998,7 +2002,17 @@
     z-index: 3;
     box-shadow: 0 1px 6px rgba(0,0,0,0.12);
   }
+  .share-btn {
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.18s, transform 0.18s;
+  }
   .share-btn:hover { transform: scale(1.12); }
+  @media (hover: hover) {
+    .product:hover .wish-btn,
+    .product:hover .share-btn { opacity: 1; pointer-events: all; }
+  }
+  .product.touched .wish-btn,
+  .product.touched .share-btn { opacity: 1; pointer-events: all; }
 
   /* ─── ZOOM LIGHTBOX ─────────────────────────────────────── */
   .zoom-overlay {
@@ -3159,10 +3173,6 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
     </div>
     <div class="pm-reviews" id="pm-reviews"></div>
     <div class="pm-related" id="pm-related"></div>
-    <a class="pm-wsp-btn no-print" id="pm-wsp-btn" href="#" target="_blank" onclick="fbq('track','Contact',{content_name:'WhatsApp producto'})">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.549 4.126 1.514 5.874L.057 23.204a.75.75 0 0 0 .916.916l5.33-1.457A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.907 0-3.686-.5-5.23-1.375l-.374-.217-3.882 1.061 1.061-3.882-.217-.374A9.953 9.953 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
-      Consultar por WhatsApp
-    </a>
     <button class="pm-notify-btn no-print" onclick="openNotifySheet()">🔔 Avisame cuando haya novedades</button>
   </div>
 </div>
@@ -3508,8 +3518,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameEl2 = prod.querySelector('.product-name');
     if (nameEl2) prod.dataset.slug = slugify(nameEl2.textContent.trim());
 
-    // Open product detail modal on card click
-    prod.addEventListener('click', () => openProductModal(prod, i));
+    // Open product detail modal — two-tap on touch, direct click on desktop
+    prod.addEventListener('click', () => {
+      const isTouch = window.matchMedia('(pointer: coarse)').matches;
+      if (isTouch && !prod.classList.contains('touched')) {
+        document.querySelectorAll('.product.touched').forEach(p => p.classList.remove('touched'));
+        prod.classList.add('touched');
+        clearTimeout(prod._tt);
+        prod._tt = setTimeout(() => prod.classList.remove('touched'), 3000);
+        return;
+      }
+      prod.classList.remove('touched');
+      openProductModal(prod, i);
+    });
   });
 
   // Deep link: open product from URL hash
@@ -4066,14 +4087,8 @@ function openProductModal(prod, idx) {
   renderRelated(pmProdName, tag);
 
   // WhatsApp directo con texto del producto
-  const wspBtn = document.getElementById('pm-wsp-btn');
   const _wspMsg = `Hola! Vi el *${pmProdName}* en el catálogo y quiero consultar. ¿Tienen disponibilidad?`;
   const _wspHref = `https://wa.me/541131655653?text=${encodeURIComponent(_wspMsg)}`;
-  if (wspBtn) {
-    wspBtn.href = _wspHref;
-    wspBtn.addEventListener('click', clearAbandonCandidate, { once: true });
-  }
-
   // Registrar candidato de abandono
   setAbandonCandidate(pmProdName, pmPhotos[0] || '', _wspHref);
 
