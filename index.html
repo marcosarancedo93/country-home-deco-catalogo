@@ -4236,6 +4236,7 @@ function closeZoom(e) {
 // ─── HISTORIAL DE VISTOS ───────────────────────────────────
 const HISTORY_KEY = 'country_history';
 const HISTORY_MAX = 8;
+const HISTORY_TTL = 24 * 60 * 60 * 1000; // 24 horas en ms
 
 function initHistory() {
   renderHistoryStrip();
@@ -4243,12 +4244,14 @@ function initHistory() {
 }
 
 function getHistory() {
-  return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+  const now = Date.now();
+  return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]')
+    .filter(h => now - (h.ts || 0) < HISTORY_TTL);
 }
 
 function addToHistory(item) {
   let hist = getHistory().filter(h => h.id !== item.id);
-  hist.unshift(item);
+  hist.unshift({ ...item, ts: Date.now() });
   if (hist.length > HISTORY_MAX) hist = hist.slice(0, HISTORY_MAX);
   localStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
   renderHistoryStrip();
