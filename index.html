@@ -1011,7 +1011,13 @@
     color: #2c1f0e;
     flex: 1;
     text-align: center;
-    padding-right: 28px;
+  }
+  .pm-share-btn {
+    background: none; border: none;
+    cursor: pointer; color: #5c3d1e;
+    padding: 4px 0 4px 12px;
+    -webkit-tap-highlight-color: transparent;
+    display: flex; align-items: center;
   }
 
   /* Photo */
@@ -2855,6 +2861,9 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
     <div class="pm-topbar">
       <button class="pm-back" onclick="closeProductModal()">&#8592;</button>
       <div class="pm-topbar-brand">Country</div>
+      <button class="pm-share-btn" id="pm-share-btn" onclick="shareCurrentProduct()" aria-label="Compartir">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
     </div>
     <div class="pm-photo-wrap" id="pm-photo-wrap">
       <img class="pm-photo" id="pm-photo" src="" alt="">
@@ -3170,9 +3179,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     info.appendChild(btn);
 
+    // Deep link slug
+    const nameEl2 = prod.querySelector('.product-name');
+    if (nameEl2) prod.dataset.slug = slugify(nameEl2.textContent.trim());
+
     // Open product detail modal on card click
     prod.addEventListener('click', () => openProductModal(prod, i));
   });
+
+  // Deep link: open product from URL hash
+  const initHash = location.hash.slice(1);
+  if (initHash) {
+    const allProds = [...document.querySelectorAll('#section-coleccion .product')];
+    const target = allProds.find(p => p.dataset.slug === initHash);
+    if (target) {
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => openProductModal(target, allProds.indexOf(target)), 500);
+      }, 400);
+    }
+  }
 
   // Check payment return from MP
   const params = new URLSearchParams(window.location.search);
@@ -3579,6 +3605,29 @@ function closeSuccess() {
   document.getElementById('success-overlay').classList.remove('open');
 }
 
+// ─── DEEP LINKS ───────────────────────────────────────────
+function slugify(str) {
+  return str.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+async function shareCurrentProduct() {
+  const slug = slugify(pmProdName);
+  const url = `https://countryhomedeco.vercel.app/#${slug}`;
+  const btn = document.getElementById('pm-share-btn');
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: pmProdName, text: `${pmProdName} | Country Home & Deco`, url });
+    } else {
+      await navigator.clipboard.writeText(url);
+      btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5a7a4a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+      setTimeout(() => { btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>`; }, 1800);
+    }
+  } catch (_) {}
+}
+
 // ─── PRODUCT DETAIL MODAL ────────────────────────────────
 let pmPhotos = [], pmIndex = 0, pmProdEl = null, pmProdId = null, pmProdPrice = 0, pmProdName = '';
 
@@ -3630,11 +3679,23 @@ function openProductModal(prod, idx) {
   document.getElementById('product-modal').classList.add('open');
   document.getElementById('product-modal').scrollTop = 0;
   document.body.style.overflow = 'hidden';
+
+  // Deep link: update URL
+  history.replaceState(null, '', `#${slugify(pmProdName)}`);
+  // Update OG for sharing
+  document.querySelector('meta[property="og:title"]').setAttribute('content', `${pmProdName} | Country Home & Deco`);
+  document.querySelector('meta[property="og:description"]').setAttribute('content', prod.querySelector('.product-desc')?.textContent.trim() || '');
+  document.querySelector('meta[property="og:image"]').setAttribute('content', pmPhotos[0] || '');
 }
 
 function closeProductModal() {
   document.getElementById('product-modal').classList.remove('open');
   document.body.style.overflow = '';
+  // Restore URL and OG
+  history.replaceState(null, '', window.location.pathname + window.location.search);
+  document.querySelector('meta[property="og:title"]').setAttribute('content', 'Country Home & Deco');
+  document.querySelector('meta[property="og:description"]').setAttribute('content', 'Objetos de diseño para tu hogar. Vajilla, decoración y aromas.');
+  document.querySelector('meta[property="og:image"]').setAttribute('content', 'https://countryhomedeco.vercel.app/logo_country_500x500.png');
 }
 
 function pmToggleDesc() {
@@ -3943,7 +4004,7 @@ function initShareButtons() {
       const name = nameEl.textContent.trim();
       const price = priceEl ? priceEl.textContent.trim() : '';
       const text = `${name} — ${price} | Country Home & Deco`;
-      const url = 'https://countryhomedeco.vercel.app';
+      const url = `https://countryhomedeco.vercel.app/#${slugify(name)}`;
       try {
         if (navigator.share) {
           await navigator.share({ title: name, text, url });
