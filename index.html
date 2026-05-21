@@ -4520,7 +4520,7 @@ function wishlistToWhatsApp() {
 
 document.addEventListener('DOMContentLoaded', () => {
   // initWishlist y initShareButtons quitados de las cards — solo en modal
-  initZoom();
+  // initZoom desactivado
   initSearchEmpty();
   initHistory();
   initAbandonTracking();
@@ -4552,48 +4552,7 @@ function initShareButtons() {
 // ─── ZOOM ──────────────────────────────────────────────────
 let _zoomScale = 1, _zoomStartDist = 0, _zoomStartScale = 1;
 
-function initZoom() {
-  document.querySelectorAll('.main-photo').forEach(img => {
-    img.addEventListener('click', () => openZoom(img.src));
-  });
-
-  const wrap = document.getElementById('zoom-img-wrap');
-  const zImg = document.getElementById('zoom-img');
-
-  wrap.addEventListener('touchstart', e => {
-    if (e.touches.length === 2) {
-      _zoomStartDist = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
-      _zoomStartScale = _zoomScale;
-    }
-  }, { passive: true });
-
-  wrap.addEventListener('touchmove', e => {
-    if (e.touches.length === 2) {
-      e.preventDefault();
-      const dist = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
-      _zoomScale = Math.min(4, Math.max(1, _zoomStartScale * (dist / _zoomStartDist)));
-      zImg.style.transform = `scale(${_zoomScale})`;
-    }
-  }, { passive: false });
-
-  let _lastTap = 0;
-  wrap.addEventListener('touchend', () => {
-    const now = Date.now();
-    if (now - _lastTap < 280) {
-      _zoomScale = _zoomScale > 1 ? 1 : 2.5;
-      zImg.style.transition = 'transform 0.25s';
-      zImg.style.transform = `scale(${_zoomScale})`;
-      setTimeout(() => zImg.style.transition = 'transform 0.1s', 260);
-    }
-    _lastTap = now;
-  });
-}
+function initZoom() { /* zoom desactivado */ }
 
 let _blockZoom = false;
 function openZoom(src) {
