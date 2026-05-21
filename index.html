@@ -1685,6 +1685,38 @@
   }
   .search-empty.visible { display: block; }
 
+  /* ─── URGENCIA DE STOCK ─────────────────────────────────── */
+  .stock-badge {
+    position: absolute;
+    bottom: 10px; left: 10px;
+    background: rgba(220,60,40,0.92);
+    color: white;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.65em;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    backdrop-filter: blur(4px);
+    z-index: 3;
+    pointer-events: none;
+  }
+  .stock-badge.low {
+    background: rgba(210,120,0,0.92);
+  }
+  .pm-stock-badge {
+    display: inline-block;
+    background: #dc3c28;
+    color: white;
+    font-size: 0.7em;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+  .pm-stock-badge.low { background: #d27800; }
+
   /* ─── AVISAME ───────────────────────────────────────────── */
   .pm-wsp-btn {
     display: flex;
@@ -3869,6 +3901,18 @@ function openProductModal(prod, idx) {
     setTimeout(() => { btn.textContent = '+ Agregar al carrito'; btn.classList.remove('added'); }, 2000);
   };
 
+  // Badge de stock en modal
+  const existingBadge = document.getElementById('pm-stock-badge');
+  if (existingBadge) existingBadge.remove();
+  const stockCfg = getStockBadgeForProduct(pmProdName);
+  if (stockCfg) {
+    const badge = document.createElement('div');
+    badge.id = 'pm-stock-badge';
+    badge.className = `pm-stock-badge${stockCfg.type === 'low' ? ' low' : ''}`;
+    badge.textContent = stockCfg.label;
+    document.getElementById('pm-tag').insertAdjacentElement('afterend', badge);
+  }
+
   // WhatsApp directo con texto del producto
   const wspBtn = document.getElementById('pm-wsp-btn');
   if (wspBtn) {
@@ -4098,6 +4142,35 @@ async function enviarSuscripcion() {
 </script>
 
 <script>
+// ─── URGENCIA DE STOCK ────────────────────────────────────
+// Editá este objeto para activar/desactivar badges por producto.
+// "urgent" = rojo "Últimas X unidades" | "low" = naranja "Pocas unidades"
+const STOCK_CONFIG = {
+  // Ejemplos — reemplazá con los nombres exactos de tus productos:
+  // 'Elefante NOIR':              { type: 'urgent', label: 'Últimas 2 unidades' },
+  // 'Mug Vienna x6':              { type: 'low',    label: 'Pocas unidades' },
+  // 'Bandeja Hoja Decorativa Blanca': { type: 'urgent', label: 'Última unidad' },
+};
+
+function initStockBadges() {
+  document.querySelectorAll('#section-coleccion .product').forEach(prod => {
+    const name = prod.querySelector('.product-name')?.textContent.trim();
+    const cfg  = STOCK_CONFIG[name];
+    if (!cfg) return;
+
+    const badge = document.createElement('div');
+    badge.className = `stock-badge no-print${cfg.type === 'low' ? ' low' : ''}`;
+    badge.textContent = cfg.label;
+    prod.appendChild(badge);
+  });
+}
+
+function getStockBadgeForProduct(name) {
+  return STOCK_CONFIG[name] || null;
+}
+
+document.addEventListener('DOMContentLoaded', initStockBadges);
+
 // ─── WISHLIST ─────────────────────────────────────────────
 let wishlist = JSON.parse(localStorage.getItem('country_wishlist') || '[]');
 
