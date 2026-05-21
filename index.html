@@ -290,6 +290,24 @@
   }
   .whatsapp-btn:hover { background: #1ebe5d; }
 
+  /* ─── PUSH BELL ─────────────────────────────────────────── */
+  .push-bell {
+    position: fixed;
+    top: 18px; left: 18px;
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: white;
+    border: 1.5px solid #2c1f0e;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    transition: background 0.15s;
+  }
+  .push-bell:hover { background: #f5ead8; }
+  .push-bell.subscribed { border-color: #5a7a4a; }
+  .push-bell.subscribed svg { stroke: #5a7a4a; }
+
   /* ===== CARRITO ===== */
   .cart-fab {
     position: fixed; top: 16px; right: 16px;
@@ -2916,6 +2934,11 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
   <div class="zoom-hint">Pellizcar para hacer zoom · Doble toque para restablecer</div>
 </div>
 
+<!-- PUSH BELL -->
+<button class="push-bell no-print" id="push-bell" onclick="togglePushSubscription()" aria-label="Notificaciones">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2c1f0e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+</button>
+
 <!-- WISHLIST FAB -->
 <button class="wish-fab no-print" id="wish-fab" onclick="openWishlist()">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2c1f0e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
@@ -4324,6 +4347,67 @@ function clearSearch() {
   searchProducts('');
   input.focus();
 }
+
+// ─── PUSH NOTIFICATIONS ───────────────────────────────────
+const VAPID_PUBLIC_KEY = 'BN1E-x8e_Qy9xMhPrQz7VSgk-zACbRZlWvr9uohbb5-_Z-Am1Kbu5s3vw7pjn6k-hUhoJU_w4bvFdUFpDroLY-Q';
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = atob(base64);
+  return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+}
+
+async function togglePushSubscription() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+    alert('Tu navegador no soporta notificaciones push.');
+    return;
+  }
+  const reg = await navigator.serviceWorker.ready;
+  const existing = await reg.pushManager.getSubscription();
+
+  if (existing) {
+    await existing.unsubscribe();
+    localStorage.removeItem('country_push');
+    updatePushBell(false);
+    return;
+  }
+
+  const permission = await Notification.requestPermission();
+  if (permission !== 'granted') return;
+
+  const sub = await reg.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+  });
+
+  await fetch('/api/push-subscribe', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ subscription: sub.toJSON() })
+  });
+
+  localStorage.setItem('country_push', '1');
+  updatePushBell(true);
+}
+
+function updatePushBell(active) {
+  const bell = document.getElementById('push-bell');
+  if (!bell) return;
+  bell.classList.toggle('subscribed', active);
+  bell.title = active ? 'Desactivar notificaciones' : 'Activar notificaciones';
+}
+
+async function initPushBell() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    updatePushBell(!!sub);
+  } catch (_) {}
+}
+
+document.addEventListener('DOMContentLoaded', initPushBell);
 
 // ─── PWA: Registro Service Worker ────────────────────────
 if ('serviceWorker' in navigator) {
