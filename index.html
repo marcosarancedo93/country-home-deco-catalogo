@@ -1175,7 +1175,7 @@
   .pm-add-btn {
     display: block;
     width: calc(100% - 40px);
-    margin: 24px 20px 56px;
+    margin: 12px 20px 4px;
     padding: 16px;
     background: #2c1f0e;
     color: #f5ead8;
@@ -1984,10 +1984,10 @@
     margin-top: 2px;
   }
 
-  /* ─── COMPARTIR ─────────────────────────────────────────── */
+  /* ─── WSP CARD BTN ──────────────────────────────────────── */
   .share-btn {
     position: absolute;
-    top: 10px; right: 52px;
+    top: 52px; right: 10px;
     width: 36px; height: 36px;
     border-radius: 50%;
     background: rgba(255,255,255,0.92);
@@ -3149,6 +3149,7 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
       <div class="pm-name" id="pm-name"></div>
       <div class="pm-price" id="pm-price"></div>
     </div>
+    <button class="pm-add-btn" id="pm-add-btn">+ Agregar al carrito</button>
     <div class="pm-section">
       <div class="pm-section-header" onclick="pmToggleDesc()">
         <span class="pm-section-title">Descripción</span>
@@ -3158,7 +3159,6 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
     </div>
     <div class="pm-reviews" id="pm-reviews"></div>
     <div class="pm-related" id="pm-related"></div>
-    <button class="pm-add-btn" id="pm-add-btn">+ Agregar al carrito</button>
     <a class="pm-wsp-btn no-print" id="pm-wsp-btn" href="#" target="_blank" onclick="fbq('track','Contact',{content_name:'WhatsApp producto'})">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.549 4.126 1.514 5.874L.057 23.204a.75.75 0 0 0 .916.916l5.33-1.457A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.907 0-3.686-.5-5.23-1.375l-.374-.217-3.882 1.061 1.061-3.882-.217-.374A9.953 9.953 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
       Consultar por WhatsApp
@@ -4459,33 +4459,22 @@ document.addEventListener('DOMContentLoaded', () => {
   checkReviewParam();
 });
 
-// ─── COMPARTIR ─────────────────────────────────────────────
+// ─── WSP CARD BTN ──────────────────────────────────────────
 function initShareButtons() {
   document.querySelectorAll('.product').forEach(prod => {
     const nameEl = prod.querySelector('.product-name');
-    const priceEl = prod.querySelector('.product-price');
     if (!nameEl) return;
 
     const btn = document.createElement('button');
     btn.className = 'share-btn no-print';
-    btn.setAttribute('aria-label', 'Compartir');
-    btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5c3d1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>`;
+    btn.setAttribute('aria-label', 'Consultar por WhatsApp');
+    btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.549 4.126 1.514 5.874L.057 23.204a.75.75 0 0 0 .916.916l5.33-1.457A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.907 0-3.686-.5-5.23-1.375l-.374-.217-3.882 1.061 1.061-3.882-.217-.374A9.953 9.953 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>`;
 
-    btn.addEventListener('click', async e => {
+    btn.addEventListener('click', e => {
       e.stopPropagation();
       const name = nameEl.textContent.trim();
-      const price = priceEl ? priceEl.textContent.trim() : '';
-      const text = `${name} — ${price} | Country Home & Deco`;
-      const url = `https://countryhomedeco.vercel.app/#${slugify(name)}`;
-      try {
-        if (navigator.share) {
-          await navigator.share({ title: name, text, url });
-        } else {
-          await navigator.clipboard.writeText(`${text}\n${url}`);
-          btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5a7a4a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
-          setTimeout(() => { btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5c3d1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>`; }, 1500);
-        }
-      } catch (_) {}
+      const msg = `Hola! Vi el *${name}* en el catálogo y quiero consultar. ¿Tienen disponibilidad?`;
+      window.open(`https://wa.me/541131655653?text=${encodeURIComponent(msg)}`, '_blank');
     });
 
     prod.appendChild(btn);
@@ -4697,120 +4686,37 @@ async function initPushBell() {
 document.addEventListener('DOMContentLoaded', initPushBell);
 
 // ─── REVIEWS ─────────────────────────────────────────────
-// Reviews estáticas de respaldo (se muestran si Airtable no tiene reviews aún)
-const REVIEWS_CONFIG = {
-  'Elefante NOIR': [
-    { author: 'Valentina R.', location: 'Palermo', stars: 5, text: 'Quedó precioso en el living. La calidad es muy superior a lo que esperaba por el precio.', date: 'Abril 2025' },
-    { author: 'Lucía M.', location: 'Martínez', stars: 5, text: 'Lo regalé y fue la sorpresa de la reunión. El packaging también estaba muy lindo.', date: 'Marzo 2025' },
-  ],
-  'Gato NOIR': [
-    { author: 'Carolina F.', location: 'Recoleta', stars: 5, text: 'Elegantísimo. Combinó perfecto con mi decoración en blanco y negro.', date: 'Mayo 2025' },
-    { author: 'Alejandra V.', location: 'Vicente López', stars: 5, text: 'Lo vi en Instagram y no me equivoqué. Todavía más lindo en persona.', date: 'Abril 2025' },
-  ],
-  'Centro de Mesa PAMPA': [
-    { author: 'Florencia T.', location: 'Olivos', stars: 5, text: 'Hermoso. Le da un estilo rústico-moderno a mi mesa que estaba buscando hace tiempo.', date: 'Marzo 2025' },
-    { author: 'Jimena L.', location: 'San Fernando', stars: 5, text: 'Me encantó la calidad del material. Robusto y muy prolijo.', date: 'Febrero 2025' },
-  ],
-  'Florero CLAY': [
-    { author: 'Sofía B.', location: 'Belgrano', stars: 5, text: 'El color es exactamente como en las fotos. Muy elegante con flores secas.', date: 'Mayo 2025' },
-    { author: 'María J.', location: 'San Isidro', stars: 5, text: 'Súper recomendable. Le cambia el ambiente a cualquier rincón.', date: 'Abril 2025' },
-  ],
-  'Florero STONE': [
-    { author: 'Patricia C.', location: 'Núñez', stars: 5, text: 'Textura increíble, parece piedra real. Mis visitas siempre preguntan dónde lo conseguí.', date: 'Mayo 2025' },
-    { author: 'Daniela M.', location: 'Pilar', stars: 5, text: 'Lo compré para la cocina y enamoré. La relación calidad-precio es excelente.', date: 'Marzo 2025' },
-  ],
-  'Florero BRISA': [
-    { author: 'Camila R.', location: 'Palermo Soho', stars: 5, text: 'Perfecto para flores de campo. Le da un toque super natural al departamento.', date: 'Abril 2025' },
-    { author: 'Laura S.', location: 'Caballito', stars: 5, text: 'Muy lindo, bien terminado y llegó en perfecto estado.', date: 'Marzo 2025' },
-  ],
-  'Florero COAL': [
-    { author: 'Mariana P.', location: 'Barrio Norte', stars: 5, text: 'El negro mate es realmente bonito. Va con todo.', date: 'Mayo 2025' },
-    { author: 'Verónica H.', location: 'Palermo', stars: 5, text: 'Elegí este por las recomendaciones y no me defraudó. Muy prolijo.', date: 'Abril 2025' },
-  ],
-  'Tabla KURO': [
-    { author: 'Martina A.', location: 'San Telmo', stars: 5, text: 'Ideal para armado de tabla de quesos. Quedó hermoso en la mesa.', date: 'Mayo 2025' },
-    { author: 'Natalia B.', location: 'Belgrano R', stars: 5, text: 'Madera muy bien tratada. Se ve y se siente premium.', date: 'Abril 2025' },
-  ],
-  'Tabla WABI': [
-    { author: 'Claudia R.', location: 'Colegiales', stars: 5, text: 'El formato irregular le da un toque artesanal muy especial. Lo uso para picadas.', date: 'Mayo 2025' },
-    { author: 'Silvina M.', location: 'Devoto', stars: 5, text: 'Muy buena calidad de madera. Recomiendo sin dudar.', date: 'Abril 2025' },
-  ],
-  'Deck LENA': [
-    { author: 'Andrea G.', location: 'Nordelta', stars: 5, text: 'Le puse encima una tetera y galletas y quedó de revista. Increíble.', date: 'Mayo 2025' },
-    { author: 'Cecilia T.', location: 'Tigre', stars: 5, text: 'Muy versátil. Lo uso como base de centro de mesa.', date: 'Marzo 2025' },
-  ],
-  'Deck RANCH': [
-    { author: 'Gabriela F.', location: 'Quilmes', stars: 5, text: 'La madera tiene un color muy cálido. Quedó hermoso con velas encima.', date: 'Abril 2025' },
-    { author: 'Karina L.', location: 'Ramos Mejía', stars: 5, text: 'Compré tres y los usé para toda la decoración navideña. Preciosos.', date: 'Febrero 2025' },
-  ],
-  'Deck GROVE': [
-    { author: 'Marcela R.', location: 'La Plata', stars: 5, text: 'Diseño muy original. Combiné con plantas y velas y quedó impresionante.', date: 'Mayo 2025' },
-    { author: 'Romina C.', location: 'Monte Grande', stars: 5, text: 'Calidad muy por encima de lo esperado. Lo recomendé a varias amigas.', date: 'Abril 2025' },
-  ],
-  'Vela EMBER': [
-    { author: 'Luciana S.', location: 'Palermo', stars: 5, text: 'El aroma es espectacular, no es artificial para nada. Dura mucho también.', date: 'Mayo 2025' },
-    { author: 'Belén M.', location: 'San Isidro', stars: 5, text: 'La compré como regalo y la destinataria me pidió otra al toque.', date: 'Abril 2025' },
-  ],
-  'Vela HAVEN': [
-    { author: 'Florencia P.', location: 'Barracas', stars: 5, text: 'Olor increíble, no empalaga. Le puse en el baño y es un lujo.', date: 'Mayo 2025' },
-    { author: 'Agustina V.', location: 'Villa Urquiza', stars: 5, text: 'Muy bien presentada, ideal como regalo. La encargué dos veces.', date: 'Marzo 2025' },
-  ],
-  'Vela AMBER': [
-    { author: 'Carla R.', location: 'Núñez', stars: 5, text: 'Cálida, duradera y con un aroma que perfuma toda la habitación.', date: 'Abril 2025' },
-    { author: 'Inés T.', location: 'Recoleta', stars: 5, text: 'Una de las mejores velas que compré. Voy por la segunda.', date: 'Marzo 2025' },
-  ],
-  'Maceta TERRA': [
-    { author: 'Renata B.', location: 'Colegiales', stars: 5, text: 'El color terracota es precioso. Le da vida a cualquier planta.', date: 'Mayo 2025' },
-    { author: 'Valeria F.', location: 'Congreso', stars: 5, text: 'Buena cerámica, muy bien terminada. El drenaje funciona perfecto.', date: 'Abril 2025' },
-  ],
-  'Set x3 CLOVER': [
-    { author: 'Tamara C.', location: 'Palermo Hollywood', stars: 5, text: 'Los tres tamaños combinados quedan perfectos en un estante. Súper decorativos.', date: 'Mayo 2025' },
-    { author: 'Paula D.', location: 'Almagro', stars: 5, text: 'Compré como regalo de casamiento y fue un éxito total.', date: 'Abril 2025' },
-  ],
-  'Libros DUNE': [
-    { author: 'Mercedes V.', location: 'Barrio Norte', stars: 5, text: 'Le dan un toque intelectual y elegante a cualquier biblioteca o mesa de luz.', date: 'Mayo 2025' },
-    { author: 'Constanza R.', location: 'Las Cañitas', stars: 5, text: 'Exactamente lo que buscaba para mi estante de decoración. Muy prolijos.', date: 'Marzo 2025' },
-  ],
-};
+const REVIEWS_CONFIG = {};
 
-function buildReviewsHTML(reviews, prodName) {
-  if (!reviews.length) return '';
+function buildReviewsHTML(reviews) {
   const stars = n => '★'.repeat(n) + '☆'.repeat(5 - n);
-  return `
-    <div class="pm-reviews-title">Opiniones de clientes (${reviews.length})</div>
-    ${reviews.map(r => `
-      <div class="review-item">
-        <div class="review-stars">${stars(r.stars)}</div>
-        <div>
-          <span class="review-author">${r.author}</span>
-          ${r.location ? `<span class="review-location">· ${r.location}</span>` : ''}
-        </div>
-        <div class="review-text">${r.text}</div>
-        <div class="review-date">${r.date}</div>
+  const title = `<div class="pm-reviews-title">Opiniones</div>`;
+  if (!reviews.length) return title;
+  return title + reviews.map(r => `
+    <div class="review-item">
+      <div class="review-stars">${stars(r.stars)}</div>
+      <div>
+        <span class="review-author">${r.author}</span>
+        ${r.location ? `<span class="review-location">· ${r.location}</span>` : ''}
       </div>
-    `).join('')}
-    <button class="pm-notify-btn no-print" style="margin-top:8px" onclick="openReviewSheet()">✏️ Dejar mi opinión</button>
-  `;
+      <div class="review-text">${r.text}</div>
+      <div class="review-date">${r.date}</div>
+    </div>
+  `).join('');
 }
 
 async function renderReviews(prodName) {
   const container = document.getElementById('pm-reviews');
   if (!container) return;
-  // Intentar cargar desde Airtable
   try {
     const r = await fetch(`/api/reviews?product=${encodeURIComponent(prodName)}`);
     if (r.ok) {
       const data = await r.json();
-      if (data.reviews && data.reviews.length > 0) {
-        container.innerHTML = buildReviewsHTML(data.reviews, prodName);
-        return;
-      }
+      container.innerHTML = buildReviewsHTML(data.reviews || []);
+      return;
     }
   } catch (_) {}
-  // Fallback a reviews estáticas
-  const fallback = REVIEWS_CONFIG[prodName] || [];
-  container.innerHTML = buildReviewsHTML(fallback, prodName) ||
-    `<button class="pm-notify-btn no-print" onclick="openReviewSheet()">✏️ Sé el primero en opinar</button>`;
+  container.innerHTML = buildReviewsHTML([]);
 }
 
 // ─── REVIEW FORM ──────────────────────────────────────────
@@ -4965,7 +4871,7 @@ function showAbandonToast() {
   };
   toast.classList.add('visible');
   clearTimeout(_abandonTimer);
-  _abandonTimer = setTimeout(closeAbandonToast, 9000);
+  _abandonTimer = setTimeout(closeAbandonToast, 10000);
 }
 
 function closeAbandonToast() {
