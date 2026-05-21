@@ -1816,9 +1816,9 @@
   /* ─── REVIEWS ───────────────────────────────────────────── */
   .pm-reviews { padding: 0 20px 8px; }
   .pm-reviews-title {
-    font-size: 12px; font-weight: 700; color: #6b4c2a;
-    letter-spacing: 0.07em; text-transform: uppercase;
-    margin-bottom: 10px;
+    font-size: 16px; font-weight: 700; color: #2c1f0e;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    margin-bottom: 18px; padding-top: 4px;
   }
   .review-item { padding: 12px 0; border-bottom: 1px solid #f0e8da; }
   .review-item:last-child { border-bottom: none; }
@@ -3192,6 +3192,7 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
       <div class="pm-price" id="pm-price"></div>
     </div>
     <button class="pm-add-btn" id="pm-add-btn">+ Agregar al carrito</button>
+    <button class="pm-notify-btn no-print" onclick="openNotifySheet()">🔔 Avisame cuando haya novedades</button>
     <div class="pm-section">
       <div class="pm-section-header" onclick="pmToggleDesc()">
         <span class="pm-section-title">Descripción</span>
@@ -3201,7 +3202,6 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
     </div>
     <div class="pm-reviews" id="pm-reviews"></div>
     <div class="pm-related" id="pm-related"></div>
-    <button class="pm-notify-btn no-print" onclick="openNotifySheet()">🔔 Avisame cuando haya novedades</button>
   </div>
 </div>
 
@@ -4043,7 +4043,9 @@ async function shareCurrentProduct() {
 // ─── PRODUCT DETAIL MODAL ────────────────────────────────
 let pmPhotos = [], pmIndex = 0, pmProdEl = null, pmProdId = null, pmProdPrice = 0, pmProdName = '';
 
+let _modalLocked = false;
 function openProductModal(prod, idx) {
+  if (_modalLocked) return;
   pmProdEl = prod;
   pmProdId = `prod-${idx}`;
   pmProdName = prod.querySelector('.product-name')?.textContent.trim() || '';
@@ -4161,7 +4163,8 @@ function closeProductModal() {
   document.querySelector('meta[property="og:description"]').setAttribute('content', 'Objetos de diseño para tu hogar. Vajilla, decoración y aromas.');
   document.querySelector('meta[property="og:image"]').setAttribute('content', 'https://countryhomedeco.vercel.app/logo_country_500x500.png');
   _blockZoom = true;
-  setTimeout(() => { _blockZoom = false; }, 500);
+  _modalLocked = true;
+  setTimeout(() => { _blockZoom = false; _modalLocked = false; }, 500);
 }
 
 function pmToggleDesc() {
