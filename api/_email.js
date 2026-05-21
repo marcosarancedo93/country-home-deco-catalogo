@@ -138,7 +138,7 @@ function buildBuyerHTML({ buyerName, items, shipping, total, type }) {
 
       <!-- Reseña -->
       <div style="margin-top:28px;padding:20px;background:#f5ead8;border-radius:8px;text-align:center;">
-        <div style="font-size:0.95em;font-weight:600;color:#2c1f0e;margin-bottom:6px;">Cuando recibas tu pedido, contanos cómo te fue 🙏</div>
+        <div style="font-size:0.95em;font-weight:600;color:#2c1f0e;margin-bottom:6px;">Contanos como te fue 🙏</div>
         <div style="font-size:0.82em;color:#6a4f30;margin-bottom:14px;">Tu opinión ayuda a otros clientes a elegir.</div>
         ${(items || []).map(i => {
           const nombre = i.name || i.title || '';
