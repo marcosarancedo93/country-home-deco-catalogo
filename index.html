@@ -3828,6 +3828,10 @@ function openProductModal(prod, idx) {
   document.getElementById('product-modal').scrollTop = 0;
   document.body.style.overflow = 'hidden';
 
+  // Historial de vistos
+  const _img = prod.querySelector('.main-photo');
+  addToHistory({ id: pmProdName, name: pmProdName, price: prod.querySelector('.product-price')?.textContent.trim() || '', photo: _img?.src || '' });
+
   // Deep link: update URL
   history.replaceState(null, '', `#${slugify(pmProdName)}`);
   // Update OG for sharing
@@ -4266,32 +4270,7 @@ function renderHistoryStrip() {
 }
 
 function trackViewedProducts() {
-  if (!('IntersectionObserver' in window)) return;
-  const timers = new Map();
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      const prod = entry.target;
-      if (entry.isIntersecting) {
-        timers.set(prod, setTimeout(() => {
-          const nameEl = prod.querySelector('.product-name');
-          const priceEl = prod.querySelector('.product-price');
-          const img = prod.querySelector('.main-photo');
-          if (!nameEl || !img) return;
-          addToHistory({
-            id: nameEl.textContent.trim(),
-            name: nameEl.textContent.trim(),
-            price: priceEl ? priceEl.textContent.trim() : '',
-            photo: img.src
-          });
-        }, 2000));
-      } else {
-        clearTimeout(timers.get(prod));
-        timers.delete(prod);
-      }
-    });
-  }, { threshold: 0.6 });
-
-  document.querySelectorAll('#section-coleccion .product').forEach(p => observer.observe(p));
+  // El registro ocurre en openProductModal al hacer click
 }
 
 // ─── BÚSQUEDA ──────────────────────────────────────────────
