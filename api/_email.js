@@ -93,8 +93,26 @@ function buildBuyerHTML({ buyerName, items, shipping, total, type }) {
         <strong>Pago acreditado.</strong> Estamos preparando tu pedido para enviarlo.
        </div>`;
 
+  const stripTop = 'https://countryhomedeco.vercel.app/collage/strip_top.jpg';
+  const stripBot = 'https://countryhomedeco.vercel.app/collage/strip_bottom.jpg';
+
   return `
-  <div style="font-family:'Helvetica Neue',sans-serif;max-width:560px;margin:0 auto;background:#ffffff;border-radius:8px;overflow:hidden;border:1px solid #e8d5b5;">
+  <div style="font-family:'Helvetica Neue',sans-serif;max-width:600px;margin:0 auto;background:#f5f0eb;">
+
+    <!-- Collage strip top -->
+    <div style="width:100%;overflow:hidden;line-height:0;">
+      <img src="${stripTop}" alt="" width="600" height="200" style="display:block;width:100%;height:200px;object-fit:cover;object-position:center;" />
+    </div>
+
+    <!-- Separador con logo -->
+    <div style="background:#2c1f0e;padding:18px 28px;text-align:center;">
+      <div style="font-size:1.6em;font-weight:300;letter-spacing:10px;color:#f5ead8;text-transform:uppercase;">Country</div>
+      <div style="font-size:0.62em;letter-spacing:4px;color:#c4a87a;margin-top:3px;">HOME & DECO</div>
+    </div>
+
+    <!-- Contenido del email -->
+    <div style="background:#ffffff;margin:0;border-left:1px solid #e8d5b5;border-right:1px solid #e8d5b5;">
+  <div style="font-family:'Helvetica Neue',sans-serif;max-width:560px;margin:0 auto;background:#ffffff;overflow:hidden;">
 
     <!-- Header -->
     <div style="background:#2c1f0e;padding:32px 28px;text-align:center;">
@@ -160,6 +178,12 @@ function buildBuyerHTML({ buyerName, items, shipping, total, type }) {
     <div style="background:#2c1f0e;padding:16px 28px;text-align:center;">
       <div style="font-size:0.72em;letter-spacing:3px;color:#c4a87a;text-transform:uppercase;">Feel at Home</div>
     </div>
+
+  </div>
+    </div>
+
+    <!-- Collage strip bottom -->
+    <img src="https://countryhomedeco.vercel.app/collage/strip_bottom.jpg" alt="" width="600" style="display:block;width:100%;height:200px;object-fit:cover;object-position:center;" />
 
   </div>`;
 }
