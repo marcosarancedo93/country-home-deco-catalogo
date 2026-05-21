@@ -32,19 +32,24 @@ async function sendCAPIEvent({ eventName, eventSourceUrl, userData = {}, customD
 
   return new Promise((resolve) => {
     const body = JSON.stringify(payload);
-    const req = https.request({
-      hostname: 'graph.facebook.com',
-      path: `/v19.0/${PIXEL_ID}/events?access_token=${token}`,
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) }
-    }, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => resolve(JSON.parse(data)));
-    });
-    req.on('error', (e) => { console.error('[CAPI error]', e.message); resolve(null); });
-    req.write(body);
-    req.end();
+    try {
+      const req = https.request({
+        hostname: 'graph.facebook.com',
+        path: `/v19.0/${PIXEL_ID}/events?access_token=${encodeURIComponent(token)}`,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) }
+      }, (res) => {
+        let data = '';
+        res.on('data', chunk => data += chunk);
+        res.on('end', () => { try { resolve(JSON.parse(data)); } catch(_) { resolve(null); } });
+      });
+      req.on('error', (e) => { console.error('[CAPI error]', e.message); resolve(null); });
+      req.write(body);
+      req.end();
+    } catch (e) {
+      console.error('[CAPI error]', e.message);
+      resolve(null);
+    }
   });
 }
 
