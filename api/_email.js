@@ -136,6 +136,17 @@ function buildBuyerHTML({ buyerName, items, shipping, total, type }) {
         </tr>
       </table>
 
+      <!-- Reseña -->
+      <div style="margin-top:28px;padding:20px;background:#f5ead8;border-radius:8px;text-align:center;">
+        <div style="font-size:0.95em;font-weight:600;color:#2c1f0e;margin-bottom:6px;">Cuando recibas tu pedido, contanos cómo te fue 🙏</div>
+        <div style="font-size:0.82em;color:#6a4f30;margin-bottom:14px;">Tu opinión ayuda a otros clientes a elegir.</div>
+        ${(items || []).map(i => {
+          const nombre = i.name || i.title || '';
+          const link = `https://countryhomedeco.vercel.app/?resena=${encodeURIComponent(nombre)}`;
+          return `<a href="${link}" style="display:inline-block;margin:4px;padding:8px 16px;background:#2c1f0e;color:#f5ead8;border-radius:20px;font-size:0.82em;text-decoration:none;letter-spacing:0.5px;">⭐ Opinar sobre ${nombre}</a>`;
+        }).join('')}
+      </div>
+
       <!-- Contacto -->
       <div style="margin-top:28px;padding-top:20px;border-top:1px solid #f0e8d8;text-align:center;font-size:0.84em;color:#8a6840;line-height:1.8;">
         ¿Tenés alguna consulta? Escribinos por WhatsApp<br>
