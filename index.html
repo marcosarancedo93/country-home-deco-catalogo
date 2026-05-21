@@ -1610,6 +1610,115 @@
     letter-spacing: 0.5px;
   }
   .wish-wsp-btn:hover { background: #1da851; }
+
+  /* ─── BÚSQUEDA ──────────────────────────────────────────── */
+  .search-wrap {
+    max-width: 1100px;
+    margin: 0 auto 16px;
+    padding: 0 20px;
+    position: relative;
+  }
+  .search-input {
+    width: 100%;
+    padding: 12px 46px 12px 44px;
+    border: 1.5px solid #d4c4a8;
+    border-radius: 30px;
+    background: white;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.9em;
+    color: #2c1f0e;
+    outline: none;
+    transition: border-color 0.15s;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  }
+  .search-input:focus { border-color: #8a6840; }
+  .search-input::placeholder { color: #b0a090; }
+  .search-icon {
+    position: absolute;
+    left: 34px; top: 50%;
+    transform: translateY(-50%);
+    color: #b0a090;
+    pointer-events: none;
+  }
+  .search-clear {
+    position: absolute;
+    right: 34px; top: 50%;
+    transform: translateY(-50%);
+    background: none; border: none;
+    cursor: pointer; color: #8a7060;
+    font-size: 1.1em; line-height: 1;
+    display: none; padding: 4px;
+  }
+  .search-clear.visible { display: block; }
+  .search-empty {
+    display: none;
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: #8a7060;
+    font-size: 0.9em;
+    line-height: 1.8;
+  }
+  .search-empty.visible { display: block; }
+
+  /* ─── COMPARTIR ─────────────────────────────────────────── */
+  .share-btn {
+    position: absolute;
+    top: 10px; right: 52px;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.92);
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+    transition: transform 0.18s;
+    z-index: 3;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.12);
+  }
+  .share-btn:hover { transform: scale(1.12); }
+
+  /* ─── ZOOM LIGHTBOX ─────────────────────────────────────── */
+  .zoom-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.94);
+    z-index: 600;
+    display: none;
+    align-items: center; justify-content: center;
+  }
+  .zoom-overlay.open { display: flex; }
+  .zoom-img-wrap {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    touch-action: none;
+  }
+  .zoom-img {
+    max-width: 100%; max-height: 100%;
+    object-fit: contain;
+    transform-origin: center;
+    transition: transform 0.1s;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .zoom-close {
+    position: absolute; top: 16px; right: 16px;
+    background: rgba(255,255,255,0.15);
+    border: none; color: white;
+    width: 42px; height: 42px; border-radius: 50%;
+    cursor: pointer; font-size: 1.4em;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 601;
+  }
+  .zoom-hint {
+    position: absolute; bottom: 20px; left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.7);
+    font-size: 0.72em; font-family: 'Work Sans', sans-serif;
+    padding: 6px 14px; border-radius: 20px;
+    pointer-events: none; letter-spacing: 0.5px;
+  }
+  .main-photo { cursor: zoom-in; }
 </style>
 <!-- Meta Pixel -->
 <script>
@@ -2044,6 +2153,12 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
   <button class="csn-btn" data-cat="mesa" onclick="filterCat('mesa')">Mesa y Cocina</button>
   <button class="csn-btn" data-cat="decoracion" onclick="filterCat('decoracion')">Decoración</button>
   <button class="csn-btn" data-cat="ambiente" onclick="filterCat('ambiente')">Ambiente</button>
+</div>
+
+<div class="search-wrap no-print">
+  <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+  <input class="search-input" id="search-input" type="search" placeholder="Buscar producto..." oninput="searchProducts(this.value)" autocomplete="off">
+  <button class="search-clear" id="search-clear" onclick="clearSearch()">×</button>
 </div>
 
 <div class="catalog">
@@ -2638,6 +2753,15 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
       </a>
     </div>
   </div>
+</div>
+
+<!-- ZOOM LIGHTBOX -->
+<div class="zoom-overlay no-print" id="zoom-overlay" onclick="closeZoom(event)">
+  <button class="zoom-close" onclick="closeZoom()">×</button>
+  <div class="zoom-img-wrap" id="zoom-img-wrap">
+    <img class="zoom-img" id="zoom-img" src="" alt="">
+  </div>
+  <div class="zoom-hint">Pellizcar para hacer zoom · Doble toque para restablecer</div>
 </div>
 
 <!-- WISHLIST FAB -->
@@ -3733,7 +3857,142 @@ function wishlistToWhatsApp() {
   window.open(`https://wa.me/541131655653?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
-document.addEventListener('DOMContentLoaded', initWishlist);
+document.addEventListener('DOMContentLoaded', () => {
+  initWishlist();
+  initShareButtons();
+  initZoom();
+  initSearchEmpty();
+});
+
+// ─── COMPARTIR ─────────────────────────────────────────────
+function initShareButtons() {
+  document.querySelectorAll('.product').forEach(prod => {
+    const nameEl = prod.querySelector('.product-name');
+    const priceEl = prod.querySelector('.product-price');
+    if (!nameEl) return;
+
+    const btn = document.createElement('button');
+    btn.className = 'share-btn no-print';
+    btn.setAttribute('aria-label', 'Compartir');
+    btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5c3d1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>`;
+
+    btn.addEventListener('click', async e => {
+      e.stopPropagation();
+      const name = nameEl.textContent.trim();
+      const price = priceEl ? priceEl.textContent.trim() : '';
+      const text = `${name} — ${price} | Country Home & Deco`;
+      const url = 'https://countryhomedeco.vercel.app';
+      try {
+        if (navigator.share) {
+          await navigator.share({ title: name, text, url });
+        } else {
+          await navigator.clipboard.writeText(`${text}\n${url}`);
+          btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5a7a4a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+          setTimeout(() => { btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5c3d1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>`; }, 1500);
+        }
+      } catch (_) {}
+    });
+
+    prod.appendChild(btn);
+  });
+}
+
+// ─── ZOOM ──────────────────────────────────────────────────
+let _zoomScale = 1, _zoomStartDist = 0, _zoomStartScale = 1;
+
+function initZoom() {
+  document.querySelectorAll('.main-photo').forEach(img => {
+    img.addEventListener('click', () => openZoom(img.src));
+  });
+
+  const wrap = document.getElementById('zoom-img-wrap');
+  const zImg = document.getElementById('zoom-img');
+
+  wrap.addEventListener('touchstart', e => {
+    if (e.touches.length === 2) {
+      _zoomStartDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      _zoomStartScale = _zoomScale;
+    }
+  }, { passive: true });
+
+  wrap.addEventListener('touchmove', e => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      _zoomScale = Math.min(4, Math.max(1, _zoomStartScale * (dist / _zoomStartDist)));
+      zImg.style.transform = `scale(${_zoomScale})`;
+    }
+  }, { passive: false });
+
+  let _lastTap = 0;
+  wrap.addEventListener('touchend', () => {
+    const now = Date.now();
+    if (now - _lastTap < 280) {
+      _zoomScale = _zoomScale > 1 ? 1 : 2.5;
+      zImg.style.transition = 'transform 0.25s';
+      zImg.style.transform = `scale(${_zoomScale})`;
+      setTimeout(() => zImg.style.transition = 'transform 0.1s', 260);
+    }
+    _lastTap = now;
+  });
+}
+
+function openZoom(src) {
+  _zoomScale = 1;
+  const zImg = document.getElementById('zoom-img');
+  zImg.src = src;
+  zImg.style.transform = 'scale(1)';
+  document.getElementById('zoom-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeZoom(e) {
+  if (e && e.target !== document.getElementById('zoom-overlay') && !e.target.classList.contains('zoom-close')) return;
+  document.getElementById('zoom-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ─── BÚSQUEDA ──────────────────────────────────────────────
+function initSearchEmpty() {
+  const catalog = document.querySelector('.catalog');
+  const emptyEl = document.createElement('div');
+  emptyEl.className = 'search-empty';
+  emptyEl.id = 'search-empty';
+  emptyEl.innerHTML = 'No encontramos productos para esa búsqueda.<br>Probá con otro término.';
+  catalog.appendChild(emptyEl);
+}
+
+function searchProducts(q) {
+  const term = q.trim().toLowerCase();
+  const clearBtn = document.getElementById('search-clear');
+  clearBtn.classList.toggle('visible', term.length > 0);
+
+  let visible = 0;
+  document.querySelectorAll('#section-coleccion .product').forEach(p => {
+    const name = p.querySelector('.product-name')?.textContent.toLowerCase() || '';
+    const desc = p.querySelector('.product-desc')?.textContent.toLowerCase() || '';
+    const tag  = p.querySelector('.product-tag')?.textContent.toLowerCase() || '';
+    const match = !term || name.includes(term) || desc.includes(term) || tag.includes(term);
+    p.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+
+  const emptyEl = document.getElementById('search-empty');
+  if (emptyEl) emptyEl.classList.toggle('visible', visible === 0 && term.length > 0);
+}
+
+function clearSearch() {
+  const input = document.getElementById('search-input');
+  input.value = '';
+  searchProducts('');
+  input.focus();
+}
 
 // ─── PWA: Registro Service Worker ────────────────────────
 if ('serviceWorker' in navigator) {
