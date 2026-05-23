@@ -1235,13 +1235,13 @@
     display: flex;
     align-items: flex-end;
   }
-  .portada-hero img {
+  .portada-hero img:first-child {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 30%;
+    object-position: center 62%;
   }
   .portada-hero-overlay {
     position: absolute;
@@ -1382,8 +1382,9 @@
   .portada-cta-bar button:hover { background: #3a2e20; }
 
   @media (min-width: 769px) {
-    .portada-hero { height: 65vh; max-height: 620px; align-items: center; }
-    .portada-hero-content { padding: 0 40px; }
+    .portada-hero { height: 65vh; max-height: 620px; align-items: flex-end; }
+    .portada-hero img:first-child { object-position: center 55%; }
+    .portada-hero-content { padding: 0 40px 60px; }
     .portada-hero-title { font-size: 5em; letter-spacing: 18px; }
   }
 
