@@ -1381,19 +1381,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
-    gap: 6px 20px;
-    padding: 13px 20px;
-    font-size: 0.74em;
-    letter-spacing: 1.5px;
+    gap: 8px;
+    padding: 14px 20px;
+    font-size: 0.78em;
+    letter-spacing: 2px;
     text-transform: uppercase;
   }
   .portada-info span { color: #c4a87a; }
-  .portada-info-sep { color: #5c4a30; margin: 0 2px; }
-  @media (max-width: 480px) {
-    .portada-info { flex-direction: column; gap: 6px; letter-spacing: 1px; }
-    .portada-info-sep { display: none; }
-  }
 
   .portada-features {
     background: #f5f0eb;
@@ -2531,8 +2525,13 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
         <div style="background:#c4a87a;width:0%;height:100%;border-radius:10px;"></div>
       </div>
     </div>
-    <div style="font-size:0.8em;color:#8a6840;letter-spacing:1px;margin-bottom:20px;line-height:1.8;">
-      Andreani · Correo Argentino<br>A todo el país
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
+      <div style="background:#2c1f0e;color:#f5ead8;border-radius:6px;padding:8px 14px;font-size:0.8em;font-weight:600;letter-spacing:0.5px;">
+        Hasta 3 cuotas sin interés
+      </div>
+      <div style="background:#eaf4ea;color:#3a6e3a;border:1px solid #b0d4b0;border-radius:6px;padding:8px 14px;font-size:0.8em;font-weight:600;letter-spacing:0.5px;">
+        10% OFF con transferencia bancaria
+      </div>
     </div>
     <button class="modal-btn" onclick="document.getElementById('modalShipping').classList.add('hidden'); setTimeout(()=>document.getElementById('modalSubscribe').classList.remove('hidden'), 800);">Explorar la tienda</button>
   </div>
@@ -2591,20 +2590,11 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
   </div>
 
   <div class="portada-info">
-    <span style="display:flex;align-items:center;gap:6px;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c4a87a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-      Envío gratis desde <span>$100.000</span>
-    </span>
-    <span class="portada-info-sep">·</span>
-    <span style="display:flex;align-items:center;gap:6px;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c4a87a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-      Hasta <span>3 cuotas sin interés</span>
-    </span>
-    <span class="portada-info-sep">·</span>
-    <span style="display:flex;align-items:center;gap:6px;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c4a87a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-      <span>10% OFF</span> con transferencia
-    </span>
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c4a87a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+      <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+    </svg>
+    Envío gratis desde <span>$100.000</span>
   </div>
 
   <div class="portada-features">
