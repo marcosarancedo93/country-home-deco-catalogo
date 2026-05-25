@@ -518,10 +518,21 @@
   .transfer-box.visible { display: block; }
 
   .mp-box {
-    background: #eef6ff; border: 1px solid #009EE3;
-    border-radius: 3px; padding: 14px; margin: 12px 0; display: none;
+    background: #fff; border: 1px solid #e0e0e0;
+    border-radius: 8px; margin: 12px 0; display: none;
+    overflow: hidden;
   }
   .mp-box.visible { display: block; }
+  .mp-box-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px; border-bottom: 1px solid #e8e8e8;
+  }
+  .mp-box-body { padding: 18px 16px; }
+  .mp-box-footer {
+    background: #f5f5f5; padding: 14px 16px;
+    display: flex; align-items: center; gap: 10px;
+    border-top: 1px solid #e8e8e8;
+  }
   .transfer-row {
     display: flex; justify-content: space-between;
     font-size: 0.85em; margin-bottom: 7px;
@@ -2381,11 +2392,55 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
           </div>
 
           <div class="mp-box" id="mp-box">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-              <img src="/logo_mp.png" alt="Mercado Pago" style="height:28px;width:auto;">
+            <!-- Header: logo + cuotas -->
+            <div class="mp-box-header">
+              <img src="/logo_mp.png" alt="Mercado Pago" style="height:30px;width:auto;flex-shrink:0;">
+              <span style="font-family:'Work Sans',sans-serif;font-weight:800;font-size:0.78em;letter-spacing:1px;color:#2c1f0e;">HASTA 3 CUOTAS SIN INTERÉS</span>
             </div>
-            <div class="transfer-row"><span class="transfer-label">Hasta 3 cuotas sin interés</span><span class="transfer-value" style="color:#009EE3;font-weight:700;" id="mp-cuotas-label">—</span></div>
-            <div class="transfer-row"><span class="transfer-label">Tarjetas · Débito · Cuenta MP</span><span class="transfer-value">✓</span></div>
+            <!-- Body -->
+            <div class="mp-box-body">
+              <p style="font-family:'Work Sans',sans-serif;font-size:1em;font-weight:700;color:#1a1a1a;margin-bottom:16px;">Pagá con tu cuenta de Mercado Pago</p>
+              <!-- Beneficios -->
+              <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8L2 7h20l-6-4z"/></svg>
+                <p style="font-family:'Work Sans',sans-serif;font-size:0.85em;color:#333;line-height:1.5;"><strong>Usá tus tarjetas guardadas,</strong> dinero disponible y mucho más.</p>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:18px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                <p style="font-family:'Work Sans',sans-serif;font-size:0.85em;color:#333;line-height:1.5;"><strong>Accedé a Cuotas sin Tarjeta</strong> para comprar ahora y pagar después.</p>
+              </div>
+              <!-- Logos tarjetas -->
+              <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                <!-- VISA -->
+                <div style="border:1px solid #ddd;border-radius:5px;padding:3px 7px;background:#fff;display:flex;align-items:center;height:28px;">
+                  <svg viewBox="0 0 60 20" width="32" height="11"><text x="0" y="14" font-family="Arial" font-weight="700" font-size="14" fill="#1A1F71">VISA</text></svg>
+                </div>
+                <!-- Mastercard -->
+                <div style="border:1px solid #ddd;border-radius:5px;padding:3px 7px;background:#fff;display:flex;align-items:center;height:28px;">
+                  <svg viewBox="0 0 38 24" width="28" height="18"><circle cx="13" cy="12" r="9" fill="#EB001B"/><circle cx="25" cy="12" r="9" fill="#F79E1B"/><path d="M19 5.1a9 9 0 0 1 0 13.8A9 9 0 0 1 19 5.1z" fill="#FF5F00"/></svg>
+                </div>
+                <!-- AMEX -->
+                <div style="border:1px solid #ddd;border-radius:5px;padding:3px 7px;background:#016FD0;display:flex;align-items:center;height:28px;">
+                  <svg viewBox="0 0 40 14" width="30" height="11"><text x="0" y="11" font-family="Arial" font-weight="700" font-size="11" fill="#fff">AMEX</text></svg>
+                </div>
+                <!-- Naranja X -->
+                <div style="border:1px solid #ddd;border-radius:5px;padding:3px 7px;background:#FF6200;display:flex;align-items:center;height:28px;">
+                  <svg viewBox="0 0 28 14" width="22" height="11"><text x="0" y="11" font-family="Arial" font-weight="700" font-size="11" fill="#fff">NX</text></svg>
+                </div>
+                <!-- Cabal -->
+                <div style="border:1px solid #ddd;border-radius:5px;padding:3px 7px;background:#fff;display:flex;align-items:center;height:28px;">
+                  <svg viewBox="0 0 44 14" width="34" height="11"><text x="0" y="11" font-family="Arial" font-weight="700" font-size="10" fill="#0055A5">CABAL</text></svg>
+                </div>
+              </div>
+            </div>
+            <!-- Footer -->
+            <div class="mp-box-footer">
+              <img src="/logo_mp.png" alt="" style="height:20px;width:auto;opacity:0.4;flex-shrink:0;">
+              <div>
+                <p style="font-family:'Work Sans',sans-serif;font-size:0.82em;font-weight:600;color:#555;">Te llevaremos a Mercado Pago</p>
+                <p style="font-family:'Work Sans',sans-serif;font-size:0.76em;color:#888;margin-top:1px;">Si no tenés una cuenta, podés usar tu e-mail.</p>
+              </div>
+            </div>
           </div>
 
           <div class="transfer-box" id="transfer-box">
