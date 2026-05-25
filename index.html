@@ -5051,10 +5051,30 @@ function initAbandonTracking() {
   async function fetchSuggestions(streetName) {
     if (streetName !== currentStreet) return;
     try {
-      const url = `https://georef-ar.api.gob.ar/api/calles?nombre=${encodeURIComponent(streetName)}&max=6&campos=nombre,departamento.nombre,provincia.nombre`;
+      const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(streetName)}&limit=12&osm_tag=highway&bbox=-73.5,-55.9,-53.7,-21.8`;
       const res  = await fetch(url);
       const data = await res.json();
-      if (streetName === currentStreet) renderSuggestions(data.calles || []);
+      if (streetName !== currentStreet) return;
+
+      // Filtrar solo Argentina y deduplicar por nombre+provincia
+      const seen   = new Set();
+      const calles = (data.features || [])
+        .map(f => f.properties)
+        .filter(p => p.countrycode === 'AR' && p.name)
+        .filter(p => {
+          const key = (p.name + '|' + (p.state || '')).toLowerCase();
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        })
+        .slice(0, 6)
+        .map(p => ({
+          nombre:        p.name,
+          departamento:  { nombre: p.city || p.district || p.county || '' },
+          provincia:     { nombre: p.state || '' },
+        }));
+
+      renderSuggestions(calles);
     } catch (_) {}
   }
 
