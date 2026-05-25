@@ -147,6 +147,7 @@
   .product-price-sub {
     font-size: 0.72em; color: #8a6840; margin-top: 2px;
     font-family: 'Work Sans', sans-serif;
+    display: none; /* solo visible en modal de producto */
   }
   .product-cuotas {
     display: block; margin-top: 7px;
@@ -3365,7 +3366,7 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
       <div class="pm-tag" id="pm-tag"></div>
       <div class="pm-name" id="pm-name"></div>
       <div class="pm-price" id="pm-price"></div>
-      <div class="product-price-sub" id="pm-price-sub" style="font-size:0.8em;margin-top:3px;"></div>
+      <div class="product-price-sub" id="pm-price-sub" style="font-size:0.8em;margin-top:3px;display:block;"></div>
       <div id="pm-cuotas" style="margin-top:6px;"></div>
     </div>
     <button class="pm-add-btn" id="pm-add-btn">+ Agregar al carrito</button>
@@ -4262,15 +4263,17 @@ function openProductModal(prod, idx) {
   document.getElementById('pm-price').textContent = prod.querySelector('.product-price')?.textContent.trim() || '';
   document.getElementById('pm-desc').textContent  = desc;
   document.getElementById('pm-tag').textContent   = tag;
-  // Sin impuestos + cuotas en modal
-  document.getElementById('pm-price-sub').textContent = prod.querySelector('.product-price-sub')?.textContent.trim() || '';
-  const cuotasEl   = prod.querySelector('.product-cuotas');
-  const transferEl = prod.querySelector('.product-transfer-price');
-  const pmCuotas   = document.getElementById('pm-cuotas');
+  // Sin impuestos + cuotas en modal — calculado dinámicamente desde el precio
+  const rawPriceText = prod.querySelector('.product-price')?.textContent.trim() || '';
+  const rawPrice = parseInt(rawPriceText.replace(/\D/g, ''), 10) || 0;
+  const fmtNum = n => '$' + Math.round(n).toLocaleString('es-AR').replace(/,/g, '.');
+  document.getElementById('pm-price-sub').textContent =
+    rawPrice > 0 ? `Precio s/imp. nac. ${fmtNum(rawPrice / 1.21)}` : '';
+  const pmCuotas = document.getElementById('pm-cuotas');
   let cuotasHTML = '';
-  if (cuotasEl)   cuotasHTML += `<span class="product-cuotas">${cuotasEl.textContent.trim()}</span> `;
-  if (transferEl) cuotasHTML += `<span class="product-transfer-price" style="display:inline-block;margin-top:4px">${transferEl.textContent.trim()}</span>`;
-  pmCuotas.innerHTML = cuotasHTML;
+  if (rawPrice >= 50000) cuotasHTML += `<span class="product-cuotas" style="display:inline-block">hasta 3 cuotas sin interés</span> `;
+  cuotasHTML += `<span class="product-transfer-price" style="display:inline-block;margin-top:4px">10% OFF con transferencia · ${fmtNum(rawPrice * 0.9)}</span>`;
+  pmCuotas.innerHTML = rawPrice > 0 ? cuotasHTML : '';
 
   // Thumbnail strip
   const strip = document.getElementById('pm-thumbs');
