@@ -2249,10 +2249,16 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
             <div class="fg"><label>Teléfono *</label><input type="tel" id="f-phone" placeholder="11 xxxx-xxxx"></div>
             <div class="fg"><label>Email *</label><input type="email" id="f-email" placeholder="tu@email.com"></div>
           </div>
-          <div class="fg addr-wrap">
-            <label>Dirección *</label>
-            <input type="text" id="f-address" placeholder="Calle y número" autocomplete="off">
-            <div class="addr-suggestions" id="addr-suggestions"></div>
+          <div class="fg-row" style="align-items:flex-start">
+            <div class="fg addr-wrap" style="flex:2">
+              <label>Calle *</label>
+              <input type="text" id="f-address" placeholder="Nombre de la calle" autocomplete="off">
+              <div class="addr-suggestions" id="addr-suggestions"></div>
+            </div>
+            <div class="fg" style="flex:1">
+              <label>Número *</label>
+              <input type="text" id="f-number" placeholder="Ej: 1234" autocomplete="off">
+            </div>
           </div>
           <div class="fg-row">
             <div class="fg"><label>Piso / Dpto</label><input type="text" id="f-floor" placeholder="Ej: 3° B"></div>
@@ -3784,7 +3790,8 @@ function validateForm() {
     { id: 'f-name', label: 'Nombre' },
     { id: 'f-phone', label: 'Teléfono' },
     { id: 'f-email', label: 'Email' },
-    { id: 'f-address', label: 'Dirección' },
+    { id: 'f-address', label: 'Calle' },
+    { id: 'f-number', label: 'Número' },
     { id: 'f-city', label: 'Ciudad' },
     { id: 'f-province', label: 'Provincia' }
   ];
@@ -3804,7 +3811,7 @@ function getBuyer() {
     phone: document.getElementById('f-phone').value.trim(),
     email: document.getElementById('f-email').value.trim(),
     address: [
-      document.getElementById('f-address').value.trim(),
+      document.getElementById('f-address').value.trim() + ' ' + document.getElementById('f-number').value.trim(),
       document.getElementById('f-floor').value.trim(),
       document.getElementById('f-building').value.trim()
     ].filter(Boolean).join(', '),
@@ -4965,16 +4972,8 @@ function initAbandonTracking() {
   let currentStreet = '';
   let focusedIdx    = -1;
 
-  // Extrae la parte de texto (calle) ignorando el número al final
-  // Ej: "Rivadavia 1234" → "Rivadavia"
   function extractStreetName(val) {
-    return val.replace(/\s+\d+.*$/, '').trim();
-  }
-
-  // Extrae solo el número si ya lo escribió
-  function extractNumber(val) {
-    const m = val.match(/\s+(\d+.*)$/);
-    return m ? m[1].trim() : '';
+    return val.trim();
   }
 
   // Normaliza el nombre de provincia de Georef al valor del <select>
@@ -5000,8 +4999,7 @@ function initAbandonTracking() {
 
   function selectResult(calle) {
     // calle: { nombre, departamento: { nombre }, provincia: { nombre } }
-    const numero  = extractNumber(input.value);
-    input.value   = calle.nombre + (numero ? ' ' + numero : '');
+    input.value = calle.nombre;
 
     const cityEl  = document.getElementById('f-city');
     const provEl  = document.getElementById('f-province');
@@ -5011,10 +5009,9 @@ function initAbandonTracking() {
       if (prov) provEl.value = prov;
     }
     closeBox();
-    input.focus();
-    // Mover cursor al final para que siga escribiendo el número
-    const len = input.value.length;
-    input.setSelectionRange(len, len);
+    // Pasar el foco al campo número
+    const numEl = document.getElementById('f-number');
+    if (numEl) numEl.focus();
   }
 
   function closeBox() {
