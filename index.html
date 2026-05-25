@@ -4955,44 +4955,38 @@ function initAbandonTracking() {
   });
 }
 
-// ─── AUTOCOMPLETE DIRECCIÓN ───────────────────────────────
+// ─── AUTOCOMPLETE DIRECCIÓN (Georef AR) ───────────────────
 (function () {
   const input = document.getElementById('f-address');
   const box   = document.getElementById('addr-suggestions');
   if (!input || !box) return;
 
   let debounceTimer = null;
-  let currentQuery  = '';
+  let currentStreet = '';
   let focusedIdx    = -1;
 
-  const PROVINCE_MAP = {
-    'Buenos Aires':                       'Buenos Aires',
-    'Ciudad Autónoma de Buenos Aires':    'Ciudad Autónoma de Buenos Aires',
-    'Autonomous City of Buenos Aires':    'Ciudad Autónoma de Buenos Aires',
-    'CABA':                               'Ciudad Autónoma de Buenos Aires',
-    'Catamarca':    'Catamarca',  'Chaco':     'Chaco',
-    'Chubut':       'Chubut',    'Córdoba':   'Córdoba',
-    'Corrientes':   'Corrientes','Entre Ríos':'Entre Ríos',
-    'Formosa':      'Formosa',   'Jujuy':     'Jujuy',
-    'La Pampa':     'La Pampa',  'La Rioja':  'La Rioja',
-    'Mendoza':      'Mendoza',   'Misiones':  'Misiones',
-    'Neuquén':      'Neuquén',   'Río Negro': 'Río Negro',
-    'Salta':        'Salta',     'San Juan':  'San Juan',
-    'San Luis':     'San Luis',  'Santa Cruz':'Santa Cruz',
-    'Santa Fe':     'Santa Fe',
-    'Santiago del Estero': 'Santiago del Estero',
-    'Tierra del Fuego':    'Tierra del Fuego',
-    'Tucumán':      'Tucumán',
-  };
+  // Extrae la parte de texto (calle) ignorando el número al final
+  // Ej: "Rivadavia 1234" → "Rivadavia"
+  function extractStreetName(val) {
+    return val.replace(/\s+\d+.*$/, '').trim();
+  }
 
-  function mapProvince(state) {
-    if (!state) return '';
-    if (PROVINCE_MAP[state]) return PROVINCE_MAP[state];
-    // búsqueda parcial (ej: "Buenos Aires Province")
-    for (const [k, v] of Object.entries(PROVINCE_MAP)) {
-      if (state.includes(k) || k.includes(state)) return v;
-    }
-    return state;
+  // Extrae solo el número si ya lo escribió
+  function extractNumber(val) {
+    const m = val.match(/\s+(\d+.*)$/);
+    return m ? m[1].trim() : '';
+  }
+
+  // Normaliza el nombre de provincia de Georef al valor del <select>
+  // Georef devuelve los nombres oficiales — coinciden exactamente con las <option>
+  function matchProvince(provName) {
+    if (!provName) return '';
+    const provEl = document.getElementById('f-province');
+    if (!provEl) return '';
+    const opt = Array.from(provEl.options).find(
+      o => o.value.toLowerCase() === provName.toLowerCase()
+    );
+    return opt ? opt.value : '';
   }
 
   function getItems() { return box.querySelectorAll('.addr-suggestion-item'); }
@@ -5004,23 +4998,23 @@ function initAbandonTracking() {
     if (focusedIdx >= 0) items[focusedIdx].classList.add('focused');
   }
 
-  function selectResult(r) {
-    const addr  = r.address || {};
-    const road  = addr.road || addr.pedestrian || addr.street || '';
-    const num   = addr.house_number || '';
-    const main  = road ? road + (num ? ' ' + num : '') : r.display_name.split(',')[0];
-    const city  = addr.city || addr.town || addr.municipality || addr.village || addr.county || '';
-    const prov  = mapProvince(addr.state);
+  function selectResult(calle) {
+    // calle: { nombre, departamento: { nombre }, provincia: { nombre } }
+    const numero  = extractNumber(input.value);
+    input.value   = calle.nombre + (numero ? ' ' + numero : '');
 
-    input.value = main;
-    const cityEl = document.getElementById('f-city');
-    const provEl = document.getElementById('f-province');
-    if (cityEl && city) cityEl.value = city;
-    if (provEl && prov) {
-      const opt = Array.from(provEl.options).find(o => o.value === prov);
-      if (opt) provEl.value = prov;
+    const cityEl  = document.getElementById('f-city');
+    const provEl  = document.getElementById('f-province');
+    if (cityEl) cityEl.value = calle.departamento?.nombre || '';
+    if (provEl) {
+      const prov = matchProvince(calle.provincia?.nombre);
+      if (prov) provEl.value = prov;
     }
     closeBox();
+    input.focus();
+    // Mover cursor al final para que siga escribiendo el número
+    const len = input.value.length;
+    input.setSelectionRange(len, len);
   }
 
   function closeBox() {
@@ -5028,26 +5022,19 @@ function initAbandonTracking() {
     focusedIdx = -1;
   }
 
-  function renderSuggestions(results) {
+  function renderSuggestions(calles) {
     box.innerHTML = '';
     focusedIdx = -1;
 
-    if (!results.length) {
-      box.innerHTML = '<div class="addr-nf">No encontramos esa dirección</div>';
+    if (!calles.length) {
+      box.innerHTML = '<div class="addr-nf">No encontramos esa calle</div>';
       box.classList.add('open');
       return;
     }
 
-    results.forEach(r => {
-      const addr   = r.address || {};
-      const road   = addr.road || addr.pedestrian || addr.street || '';
-      const num    = addr.house_number || '';
-      const main   = road ? road + (num ? ' ' + num : '') : r.display_name.split(',')[0];
-      const parts  = [];
-      const city   = addr.city || addr.town || addr.municipality || addr.village || '';
-      if (city) parts.push(city);
-      if (addr.state) parts.push(addr.state);
-      const sub = parts.join(', ') || '';
+    calles.forEach(c => {
+      const main = c.nombre;
+      const sub  = [c.departamento?.nombre, c.provincia?.nombre].filter(Boolean).join(', ');
 
       const item = document.createElement('div');
       item.className = 'addr-suggestion-item';
@@ -5057,28 +5044,30 @@ function initAbandonTracking() {
           <div class="addr-main">${main}</div>
           ${sub ? `<div class="addr-sub">${sub}</div>` : ''}
         </div>`;
-      item.addEventListener('mousedown', e => { e.preventDefault(); selectResult(r); });
+      item.addEventListener('mousedown', e => { e.preventDefault(); selectResult(c); });
       box.appendChild(item);
     });
 
     box.classList.add('open');
   }
 
-  async function fetchSuggestions(query) {
+  async function fetchSuggestions(streetName) {
+    if (streetName !== currentStreet) return;
     try {
-      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query + ', Argentina')}&countrycodes=ar&format=json&addressdetails=1&limit=6&accept-language=es`;
+      const url = `https://georef-ar.api.gob.ar/api/calles?nombre=${encodeURIComponent(streetName)}&max=6&campos=nombre,departamento.nombre,provincia.nombre`;
       const res  = await fetch(url);
       const data = await res.json();
-      if (currentQuery === query) renderSuggestions(data);
+      if (streetName === currentStreet) renderSuggestions(data.calles || []);
     } catch (_) {}
   }
 
   input.addEventListener('input', () => {
-    const val = input.value.trim();
-    currentQuery = val;
+    const val    = input.value.trim();
+    const street = extractStreetName(val);
+    currentStreet = street;
     clearTimeout(debounceTimer);
-    if (val.length < 4) { closeBox(); return; }
-    debounceTimer = setTimeout(() => fetchSuggestions(val), 420);
+    if (street.length < 3) { closeBox(); return; }
+    debounceTimer = setTimeout(() => fetchSuggestions(street), 380);
   });
 
   input.addEventListener('keydown', e => {
@@ -5090,9 +5079,9 @@ function initAbandonTracking() {
     if (e.key === 'Escape')     { closeBox(); }
   });
 
-  input.addEventListener('blur', () => setTimeout(closeBox, 180));
+  input.addEventListener('blur',  () => setTimeout(closeBox, 180));
   input.addEventListener('focus', () => {
-    if (box.innerHTML && input.value.trim().length >= 4) box.classList.add('open');
+    if (box.children.length && extractStreetName(input.value).length >= 3) box.classList.add('open');
   });
 })();
 
