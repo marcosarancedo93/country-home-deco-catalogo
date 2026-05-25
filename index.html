@@ -4271,8 +4271,8 @@ function openProductModal(prod, idx) {
     rawPrice > 0 ? `Precio s/imp. nac. ${fmtNum(rawPrice / 1.21)}` : '';
   const pmCuotas = document.getElementById('pm-cuotas');
   let cuotasHTML = '';
-  if (rawPrice >= 50000) cuotasHTML += `<span class="product-cuotas" style="display:inline-block">hasta 3 cuotas sin interés</span> `;
-  cuotasHTML += `<span class="product-transfer-price" style="display:inline-block;margin-top:4px">10% OFF con transferencia · ${fmtNum(rawPrice * 0.9)}</span>`;
+  if (rawPrice >= 50000) cuotasHTML += `<div class="product-cuotas">hasta 3 cuotas sin interés</div>`;
+  cuotasHTML += `<div class="product-transfer-price">10% OFF con transferencia · ${fmtNum(rawPrice * 0.9)}</div>`;
   pmCuotas.innerHTML = rawPrice > 0 ? cuotasHTML : '';
 
   // Thumbnail strip
