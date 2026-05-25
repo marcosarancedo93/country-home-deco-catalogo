@@ -440,6 +440,28 @@
   .fg textarea { resize: vertical; min-height: 60px; }
   .fg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
+  /* ── ADDRESS AUTOCOMPLETE ── */
+  .addr-wrap { position: relative; }
+  .addr-suggestions {
+    position: absolute; left: 0; right: 0; top: 100%;
+    background: white; border: 1px solid #d4c4a0; border-top: none;
+    border-radius: 0 0 4px 4px; max-height: 220px; overflow-y: auto;
+    z-index: 1200; display: none;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+  }
+  .addr-suggestions.open { display: block; }
+  .addr-suggestion-item {
+    padding: 9px 12px; cursor: pointer; display: flex;
+    align-items: flex-start; gap: 9px;
+    border-bottom: 1px solid #f0e8d8; font-size: 0.85em;
+  }
+  .addr-suggestion-item:last-child { border-bottom: none; }
+  .addr-suggestion-item:hover, .addr-suggestion-item.focused { background: #f5ead8; }
+  .addr-icon { color: #8a6840; flex-shrink: 0; font-size: 1em; margin-top: 1px; }
+  .addr-main { font-weight: 600; color: #2c1f0e; }
+  .addr-sub { font-size: 0.88em; color: #8a6840; margin-top: 1px; }
+  .addr-nf { padding: 10px 12px; font-size: 0.82em; color: #8a6840; font-style: italic; }
+
   .shipping-opt {
     border: 1px solid #d4c4a0; border-radius: 3px; padding: 12px 14px;
     cursor: pointer; background: white; margin-bottom: 8px;
@@ -2226,7 +2248,11 @@ src="https://www.facebook.com/tr?id=1479825037203290&ev=PageView&noscript=1"/></
             <div class="fg"><label>Teléfono *</label><input type="tel" id="f-phone" placeholder="11 xxxx-xxxx"></div>
             <div class="fg"><label>Email *</label><input type="email" id="f-email" placeholder="tu@email.com"></div>
           </div>
-          <div class="fg"><label>Dirección *</label><input type="text" id="f-address" placeholder="Calle y número"></div>
+          <div class="fg addr-wrap">
+            <label>Dirección *</label>
+            <input type="text" id="f-address" placeholder="Calle y número" autocomplete="off">
+            <div class="addr-suggestions" id="addr-suggestions"></div>
+          </div>
           <div class="fg-row">
             <div class="fg"><label>Piso / Dpto</label><input type="text" id="f-floor" placeholder="Ej: 3° B"></div>
             <div class="fg"><label>Edificio / Torre</label><input type="text" id="f-building" placeholder="Opcional"></div>
@@ -4202,6 +4228,7 @@ function pmGoTo(i) { pmIndex = i; pmRefresh(); }
     // Prevenir ghost click en botón volver — usar touchend + preventDefault
     const backBtn = document.getElementById('pm-back');
     if (backBtn) {
+      backBtn.addEventListener('click', () => closeProductModal());
       backBtn.addEventListener('touchend', e => {
         e.preventDefault();
         closeProductModal();
@@ -4923,6 +4950,147 @@ function initAbandonTracking() {
     }
   });
 }
+
+// ─── AUTOCOMPLETE DIRECCIÓN ───────────────────────────────
+(function () {
+  const input = document.getElementById('f-address');
+  const box   = document.getElementById('addr-suggestions');
+  if (!input || !box) return;
+
+  let debounceTimer = null;
+  let currentQuery  = '';
+  let focusedIdx    = -1;
+
+  const PROVINCE_MAP = {
+    'Buenos Aires':                       'Buenos Aires',
+    'Ciudad Autónoma de Buenos Aires':    'Ciudad Autónoma de Buenos Aires',
+    'Autonomous City of Buenos Aires':    'Ciudad Autónoma de Buenos Aires',
+    'CABA':                               'Ciudad Autónoma de Buenos Aires',
+    'Catamarca':    'Catamarca',  'Chaco':     'Chaco',
+    'Chubut':       'Chubut',    'Córdoba':   'Córdoba',
+    'Corrientes':   'Corrientes','Entre Ríos':'Entre Ríos',
+    'Formosa':      'Formosa',   'Jujuy':     'Jujuy',
+    'La Pampa':     'La Pampa',  'La Rioja':  'La Rioja',
+    'Mendoza':      'Mendoza',   'Misiones':  'Misiones',
+    'Neuquén':      'Neuquén',   'Río Negro': 'Río Negro',
+    'Salta':        'Salta',     'San Juan':  'San Juan',
+    'San Luis':     'San Luis',  'Santa Cruz':'Santa Cruz',
+    'Santa Fe':     'Santa Fe',
+    'Santiago del Estero': 'Santiago del Estero',
+    'Tierra del Fuego':    'Tierra del Fuego',
+    'Tucumán':      'Tucumán',
+  };
+
+  function mapProvince(state) {
+    if (!state) return '';
+    if (PROVINCE_MAP[state]) return PROVINCE_MAP[state];
+    // búsqueda parcial (ej: "Buenos Aires Province")
+    for (const [k, v] of Object.entries(PROVINCE_MAP)) {
+      if (state.includes(k) || k.includes(state)) return v;
+    }
+    return state;
+  }
+
+  function getItems() { return box.querySelectorAll('.addr-suggestion-item'); }
+
+  function setFocus(idx) {
+    const items = getItems();
+    items.forEach(el => el.classList.remove('focused'));
+    focusedIdx = Math.max(-1, Math.min(idx, items.length - 1));
+    if (focusedIdx >= 0) items[focusedIdx].classList.add('focused');
+  }
+
+  function selectResult(r) {
+    const addr  = r.address || {};
+    const road  = addr.road || addr.pedestrian || addr.street || '';
+    const num   = addr.house_number || '';
+    const main  = road ? road + (num ? ' ' + num : '') : r.display_name.split(',')[0];
+    const city  = addr.city || addr.town || addr.municipality || addr.village || addr.county || '';
+    const prov  = mapProvince(addr.state);
+
+    input.value = main;
+    const cityEl = document.getElementById('f-city');
+    const provEl = document.getElementById('f-province');
+    if (cityEl && city) cityEl.value = city;
+    if (provEl && prov) {
+      const opt = Array.from(provEl.options).find(o => o.value === prov);
+      if (opt) provEl.value = prov;
+    }
+    closeBox();
+  }
+
+  function closeBox() {
+    box.classList.remove('open');
+    focusedIdx = -1;
+  }
+
+  function renderSuggestions(results) {
+    box.innerHTML = '';
+    focusedIdx = -1;
+
+    if (!results.length) {
+      box.innerHTML = '<div class="addr-nf">No encontramos esa dirección</div>';
+      box.classList.add('open');
+      return;
+    }
+
+    results.forEach(r => {
+      const addr   = r.address || {};
+      const road   = addr.road || addr.pedestrian || addr.street || '';
+      const num    = addr.house_number || '';
+      const main   = road ? road + (num ? ' ' + num : '') : r.display_name.split(',')[0];
+      const parts  = [];
+      const city   = addr.city || addr.town || addr.municipality || addr.village || '';
+      if (city) parts.push(city);
+      if (addr.state) parts.push(addr.state);
+      const sub = parts.join(', ') || '';
+
+      const item = document.createElement('div');
+      item.className = 'addr-suggestion-item';
+      item.innerHTML = `
+        <span class="addr-icon">📍</span>
+        <div>
+          <div class="addr-main">${main}</div>
+          ${sub ? `<div class="addr-sub">${sub}</div>` : ''}
+        </div>`;
+      item.addEventListener('mousedown', e => { e.preventDefault(); selectResult(r); });
+      box.appendChild(item);
+    });
+
+    box.classList.add('open');
+  }
+
+  async function fetchSuggestions(query) {
+    try {
+      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query + ', Argentina')}&countrycodes=ar&format=json&addressdetails=1&limit=6&accept-language=es`;
+      const res  = await fetch(url);
+      const data = await res.json();
+      if (currentQuery === query) renderSuggestions(data);
+    } catch (_) {}
+  }
+
+  input.addEventListener('input', () => {
+    const val = input.value.trim();
+    currentQuery = val;
+    clearTimeout(debounceTimer);
+    if (val.length < 4) { closeBox(); return; }
+    debounceTimer = setTimeout(() => fetchSuggestions(val), 420);
+  });
+
+  input.addEventListener('keydown', e => {
+    if (!box.classList.contains('open')) return;
+    const items = getItems();
+    if (e.key === 'ArrowDown')  { e.preventDefault(); setFocus(focusedIdx + 1); }
+    if (e.key === 'ArrowUp')    { e.preventDefault(); setFocus(focusedIdx - 1); }
+    if (e.key === 'Enter' && focusedIdx >= 0) { e.preventDefault(); items[focusedIdx].dispatchEvent(new MouseEvent('mousedown')); }
+    if (e.key === 'Escape')     { closeBox(); }
+  });
+
+  input.addEventListener('blur', () => setTimeout(closeBox, 180));
+  input.addEventListener('focus', () => {
+    if (box.innerHTML && input.value.trim().length >= 4) box.classList.add('open');
+  });
+})();
 
 // ─── PWA: Service Worker desactivado ─────────────────────
 if ('serviceWorker' in navigator) {
