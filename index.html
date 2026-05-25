@@ -350,10 +350,11 @@
     position: fixed; top: 0; right: -100%; width: 400px; max-width: 100vw;
     height: 100vh; background: #faf7f3;
     z-index: 1002; display: flex; flex-direction: column;
-    transition: right 0.3s ease;
+    transition: right 0.3s ease, width 0.35s ease;
     box-shadow: -4px 0 28px rgba(0,0,0,0.18);
   }
   .cart-sidebar.open { right: 0; }
+  .cart-sidebar.fullscreen { width: 100vw; box-shadow: none; }
 
   .cart-head {
     padding: 18px 20px; background: #2c1f0e; color: #f5ead8;
@@ -3702,6 +3703,9 @@ function closeCart() {
 // ─── STEPS ───────────────────────────────────────────────
 function goStep(n) {
   currentStep = n;
+  const sidebar = document.getElementById('cart-sidebar');
+  if (n >= 2) sidebar.classList.add('fullscreen');
+  else sidebar.classList.remove('fullscreen');
   document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
 
   const foot = document.getElementById('cart-foot');
