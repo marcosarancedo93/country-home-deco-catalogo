@@ -3771,8 +3771,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.textContent = 'Agotado';
       btn.disabled = true;
       info.appendChild(btn);
-      return;
-    }
+    } else {
     const btn = document.createElement('button');
     btn.className = 'add-to-cart';
     btn.textContent = '+ Agregar al carrito';
@@ -3792,6 +3791,7 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => { btn.textContent = '+ Agregar al carrito'; btn.classList.remove('added'); }, 1800);
     });
     info.appendChild(btn);
+    } // end else agotado
 
     // Deep link slug
     const nameEl2 = prod.querySelector('.product-name');
